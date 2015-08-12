@@ -1,0 +1,16 @@
+platform :ios, '7.0'
+#use_frameworks!
+
+target 'ChartDemo' do
+  pod 'CorePlot', '~> 1.6'
+  pod 'PNChart', '~> 0.8.5'
+  pod 'CommonFMDBUtil', '~> 0.0.2'
+  pod 'CommonInfoHelper', '~> 0.0.2'
+  
+  pod 'CJPickerToolBarView', '~> 0.0.3'
+  pod 'CJPopupView', '~> 0.0.14'
+end
+
+target 'ChartDemoTests' do
+   
+end

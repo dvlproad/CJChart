@@ -1,0 +1,35 @@
+PODS:
+  - CJPickerToolBarView (0.0.3)
+  - CJPopupView (0.0.14)
+  - CommonFMDBUtil (0.0.2):
+    - FMDB (~> 2.5)
+  - CommonInfoHelper (0.0.2)
+  - CorePlot (1.6)
+  - FMDB (2.5):
+    - FMDB/standard (= 2.5)
+  - FMDB/common (2.5)
+  - FMDB/standard (2.5):
+    - FMDB/common
+  - PNChart (0.8.5):
+    - UICountingLabel (~> 1.2.0)
+  - UICountingLabel (1.2.0)
+
+DEPENDENCIES:
+  - CJPickerToolBarView (~> 0.0.3)
+  - CJPopupView (~> 0.0.14)
+  - CommonFMDBUtil (~> 0.0.2)
+  - CommonInfoHelper (~> 0.0.2)
+  - CorePlot (~> 1.6)
+  - PNChart (~> 0.8.5)
+
+SPEC CHECKSUMS:
+  CJPickerToolBarView: b4808e5aa090b58db94d00ad217840bee2d63adb
+  CJPopupView: c6054fab22fed0f459bdc9e0d4439b406d4e11a7
+  CommonFMDBUtil: 03e20e29bca2ae2d0ba549394259d652c93a207c
+  CommonInfoHelper: e20af85759476bf1588010793cbe5097c80efc5c
+  CorePlot: 820901f6c147f2d84549ffa1f0902869f980d74d
+  FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
+  PNChart: 353d27a13634c94d090ed65909776d5ceab55f31
+  UICountingLabel: 1db4e7d023e1762171eb226d6dff47a7a84f27aa
+
+COCOAPODS: 0.37.2
