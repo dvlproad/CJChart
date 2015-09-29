@@ -1,0 +1,96 @@
+
+//①②
+
+#pragma mark - 添加CorePlot-CocoaTouch.xcodeproj的详细方法
+
+/Users/lichq/Product/SVN Project/HealthDiet/0_Source/Client/iOS/HealthyDiet/HealthyDiet/Targets/coreplot/Source/CPTPathExtensions.m:19:14: Use of undeclared identifier 'CGPathCreateWithRoundedRect'; did you mean 'CGPathCreateWithRect'?
+错误原因：iOS Deployment Target不是选择7.0以上的。改成7.0就可以了。
+
+/*
+1.拷贝这个Coreplot下的整个framework到自己的项目工程中（注意是整个，而不是只拷贝CorePlot-CocoaTouch.xcodeproj），并将其中的CorePlot-CocoaTouch.xcodeproj add到Xcode中的目录下（注意这里只要添加这一个就可以了）。有时为了确保添加进来，可在BuildPhases下的Target Dependencies中添加进我们的target。编译通过再进行下一步
+
+2.将刚才add进来的CorePlot-CocoaTouch.xcodeproj 下的libCorePlot-CocoaTouch.a添加到自己项目中BuildPhases下的Link Binary With Libraries中。注意这里不要添加到CorePlot-CocoaTouch.xcodeproj下自身的Link Binary With Libraries下了，否则会出现类似Apple Mach -O Linker Error "_CPTDecimalFromDouble", referenced from:的错误。
+    另外，除了添加libCorePlot-CocoaTouch.a还应该添加CorePlot-CocoaTouch.xcodeproj中添加的其他库，在此经过比较后，我们发现，除了要添加libCorePlot-CocoaTouch.a外，还要再添加一个Accelerate.framework。否则在使用代码的时候，会出现如下错误。
+    错误：Apple Mach -O Linker Error
+    Undefined symbols for architecture i386:
+    "_vDSP_maxvD", referenced from:
+    -[CPTPlot plotRangeForField:] in libCorePlot-CocoaTouch.a(CPTPlot.o)
+    "_vDSP_minvD", referenced from:
+    -[CPTPlot plotRangeForField:] in libCorePlot-CocoaTouch.a(CPTPlot.o)
+    ld: symbol(s) not found for architecture i386
+    clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+3.设置User Header search Paths为CorePlot-CocoaTouch.xcodeproj所在的文件夹位置。这里采用相对路径$(SRCROOT)/TestMyCoreplot/framework。并且一定要使用recursive，否则会出现Lexical or Preprocessor Issue 的错误'CPTAnimation.h' file not found。
+ 
+4.添加-all_load到Build Settings下的Other Linker Flag。这样在使用代码的时候，就不会出现Unknown class CPTGraphHostingView in Interface Builder file.
+*/
+
+
+
+使用：
+
+[self.graphHostingView.hostedGraph reloadData];
+
+#pragma mark - 缩放
+1、缩放手势确认
+首先确认缩放的手势是什么，是按住alt，然后三指拖动。还是只要按住alt，单指缩放就可以了。请在图片中确认。（有一次就是手势出错，按成了后者，导致无法出现缩放效果）
+2、了解缩放规则
+缩小：如果其中某一轴的显示范围已经最小，则该轴无法再缩小，只会缩小另一轴。这个规则常被我们用于限制不能对某一轴进行缩小。
+放大：但放大，则无限制（目前貌似）。
+所以，如果只想对其中某一轴，如Y轴，要进行既不能缩小，也不能放大的限制的话，应该怎么做呢？
+答：那我们必须自己实现coreplot中用来处理缩放的委托。
+①、添加缩放委托
+即在原本的两个委托CPTPlotDataSource和CPTAxisDelegate上，加上CPTPlotSpaceDelegate委托
+②、实现该缩放委托的三个方法
+- (BOOL)plotSpace:(CPTPlotSpace *)space shouldScaleBy:(CGFloat)interactionScale aboutPoint:(CGPoint)interactionPoint;
+- (BOOL)plotSpace:(CPTPlotSpace *)space shouldHandlePointingDeviceDraggedEvent:(UIEvent *)event atPoint:(CGPoint)point;
+- (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate;//放大缩小的时候调用
+其中最重要的是willChangePlotRangeTo: forCoordinate:方法。三个方法的写法可详细参照http://blog.csdn.net/remote_roamer/article/details/8936889
+
+
+
+#pragma mark - 设置 轴标题 & 轴标签 方向
+CPSignNone:无(同CPSignNegative)，CPSignPositive:反向(在y轴的右边)，CPSignNegative:正向(在y轴的左边)
+y.titleDirection = CPTSignNegative;//轴标题方向
+y.tickDirection  = CPTSignPositive;//轴标签的刻度方向(如果是轴刻度没设置的话，默认会伸向两边)
+y.tickLabelDirection = CPTSignNegative;//轴标签的lab方向
+
+
+y.majorGridLineStyle = lineStyle;//设置栅格线，平行于x轴   如果 labelingPolicy 设置为 CPTAxisLabelingPolicyNone ， majorGridLineStyle 将不起作用//设置平行线，默认是以大刻度线为平行线位置
+
+
+#pragma mark - 定制主刻度显示标签（参见：本工程柱状图的绘制，或者在CorePlot中定制显示横轴X的labelhttp://blog.csdn.net/remote_roamer/article/details/8934692）
+CPTXYAxis *x, *y;
+eg: 定制y轴主刻度显示标签
+①、y.delegate = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
+②、并实现委托方法：
+-(BOOL)axis:(CPTAxis *)axis shouldUpdateAxisLabelsAtLocations:(NSSet *)locations
+
+
+#pragma mark - 判断定制时候的轴是X轴，还是Y轴
+可以通过先设置axis的title，再根据该title判断。暂时没找到官方判断方法
+
+
+#pragma mark - 固定y坐标轴
+y.axisConstraints = [CPTConstraints constraintWithLowerOffset:40];//这里是固定y坐标轴在最右边（距离可视右边界有多少个像素距离） 见：http://www.th7.cn/Program/IOS/201407/234690.shtml
+//该函数主要是实现固定坐标轴在距离最小端newoffset的地方
+
+
+
+
+
+
+#pragma mark - 一些重要的文章 coreplot应用指南：http://www.verydemo.com/demo_c134_i15652.html
+完善图形的代理函数。如
+在曲线上方添加y值：-(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index   //CPTPlotDataSource
+在曲线上标注坐标点：-(CPTPlotSymbol *)symbolForScatterPlot:(CPTScatterPlot *)plot recordIndex:(NSUInteger)index  //CPTScatterPlotDataSource
+点击各个数据点响应操作：-(void)scatterPlot:(CPTScatterPlot *)plot plotSymbolWasSelectedAtRecordIndex:(NSUInteger)index  //CPTScatterPlotDelegate
+所以要调用点击各个数据点的响应操作的方法，首先应该①添加协议，②关联协议，③实现协议。如关联操作为：
+CPTScatterPlot *boundLinePlot  = [[CPTScatterPlot alloc] init];
+boundLinePlot.delegate = self;  //曲线图的委托，比如实现各个数据点响应操作的CPTScatterPlotDelegate委托
+否则该委托方法调用无效。
+
+
+
+#pragma mark - 一些重要的文章  CorePlot1.0:柱状图 http://blog.csdn.net/kmyhy/article/details/7819705
+虽然讲的时柱状图，但里面涉及到很到属性的含义，以及很多方法的含义。所以，应该了解。
