@@ -14,8 +14,7 @@
     NSDate *endDate = self;
     
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSCalendarUnit calendarUnit = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
-    
+    NSCalendarUnit calendarUnit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
     
     NSDateComponents *dCom0 = [calendar components:calendarUnit fromDate:startDate];
     NSInteger year0  = [dCom0 year];
@@ -30,7 +29,7 @@
     NSMutableArray *contentArray = [[NSMutableArray alloc]init];
     NSUInteger dayIndex = 0;
     
-    for (int value_Y = year0; value_Y <= year1; value_Y++) {
+    for (NSInteger value_Y = year0; value_Y <= year1; value_Y++) {
         NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
         
         [dateComponents setYear:year0 + value_Y];
@@ -48,7 +47,7 @@
             end_M = month1;
         }
         
-        for (int value_M = start_M; value_M <= end_M; value_M++) {
+        for (NSInteger value_M = start_M; value_M <= end_M; value_M++) {
             [dateComponents setMonth:value_M];
             [dateComponents setDay:1];
             
@@ -70,27 +69,28 @@
             }
             for (NSUInteger value_D = start_D; value_D <= end_D; value_D++ ) { //range.length该月天数
                 
-                NSNumber *xVal = @(dayIndex);
                 
                 //TODO增加了几个字段，比如day字段
                 BOOL isFirstDay = value_D == 1;
                 BOOL isMiddleDayInMonth = value_D == (range.length - 0)/2;
                 BOOL isFirstMonth = value_M == 1;
-                [contentArray addObject:
-                 @{ @"x"         :xVal,
-                    @"value_D"   :[NSNumber numberWithInt:value_D],
-                    @"isFirstDay":[NSNumber numberWithBool:isFirstDay],
-                    @"isMiddleDayInMonth":[NSNumber numberWithBool:isMiddleDayInMonth],
-                    @"value_M"   :[NSNumber numberWithInt:value_M],
-                    @"isFirstMonth":[NSNumber numberWithBool:isFirstMonth],
-                    @"value_Y"   :[NSNumber numberWithInt:value_Y]}];
                 
+                CJDate *myDate = [[CJDate alloc] init];
+                myDate.index = dayIndex;
+                myDate.year = value_Y;
+                myDate.month = value_M;
+                myDate.day = value_D;
+                myDate.firstDayInMonth = isFirstDay;
+                myDate.firstMonthInYear = isFirstMonth;
+                myDate.middleDayInMonth = isMiddleDayInMonth;
+                
+                [contentArray addObject:myDate];
                 
                 dayIndex += 1;
             }
         }
     }
-    NSLog(@"现在总共有%d天", dayIndex);
+    NSLog(@"现在总共有%zd天", dayIndex);
     
     return contentArray;
 }

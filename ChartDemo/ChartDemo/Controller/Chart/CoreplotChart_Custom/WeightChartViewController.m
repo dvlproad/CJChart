@@ -570,7 +570,6 @@ static CGFloat standValue_Y = 55.0;
     
     /* Y轴标签设置 */
     if (axis.coordinate == CPTCoordinateY) {
-        //NSFormatter *formatter = axis.labelFormatter;
         //CGFloat labelOffset    = axis.labelOffset;
         NSNumber *n_standValue_Y  = [NSNumber numberWithFloat:standValue_Y];
         
@@ -603,45 +602,37 @@ static CGFloat standValue_Y = 55.0;
     NSMutableSet *axisLabelsX = [NSMutableSet set];
     for ( NSDecimalNumber *location in locations ) {
         //NSLog(@"location = %@: %d", location, [location intValue]);
+        
+        CJDate *myDate = [self.dataForXLable objectAtIndex:[location integerValue]];
+        
         if ([location intValue]%gapNumForDay == 0) {
             //②、获取当前location上的标签文本值
-            //NSString *labelString = [formatter stringForObjectValue:tickLocation];
-            NSString *string = @"kong";
-            for (int i = 0; i < self.dataForXLable.count; i++) {
-                NSDictionary *dic = [self.dataForXLable objectAtIndex:i];
-                if ([[dic valueForKey:@"x"] intValue] == [location intValue]) {
-                    NSInteger value_D = [[dic valueForKey:@"value_D"] intValue];
-                    
-                    if ([[dic valueForKey:@"isFirstDay"] boolValue]) {
-                        NSInteger value_M = [[dic valueForKey:@"value_M"] intValue];
-                        string = [NSString stringWithFormat:@"%zd.%02zd",value_M,value_D];
-                    }else{
-                        string = [NSString stringWithFormat:@"%zd", value_D];
-                    }
-                    
-                    break;
-                }
+            //NSFormatter *formatter = axis.labelFormatter;
+            //NSString *axisLabelText = [formatter stringForObjectValue:location];
+            
+            NSString *axisLabelTextDay = @"kong";
+            
+            
+            if (myDate.isFirstDayInMonth) {
+                axisLabelTextDay = [NSString stringWithFormat:@"%zd.%02zd", myDate.month, myDate.day];
+            }else{
+                axisLabelTextDay = [NSString stringWithFormat:@"%zd", myDate.day];
             }
             
-            NSString *labelString = [NSString stringWithFormat:@"%@", string];//设置标签文本
-            CPTAxisLabel *axisLabel = [self xAxisDay:axis axisLabelAtLocation:location withText:labelString];
+            CPTAxisLabel *axisLabel = [self xAxisDay:axis axisLabelAtLocation:location withText:axisLabelTextDay];
             [axisLabelsX addObject:axisLabel];
         }
         
         
 //        if ([location intValue]%gapNumForMonth == 0) {
             //获取当前location上的标签文本值
-            NSString *string = @"kong";
-            for (int i = 0; i < self.dataForXLable.count; i++) {
-                NSDictionary *dic = [self.dataForXLable objectAtIndex:i];
-                if ([[dic valueForKey:@"isMiddleDayInMonth"] boolValue] && [[dic valueForKey:@"x"] intValue] == [location intValue]) {
-                    NSInteger value_M = [[dic valueForKey:@"value_M"] intValue];
-                    string = [NSString stringWithFormat:@"%zd月", value_M];
-                    
-                    NSString *labelString = [NSString stringWithFormat:@"%@", string];
-                    CPTAxisLabel *axisLabel = [self xAxisMonth:axis axisLabelAtLocation:location withText:labelString];
-                    [axisLabelsX addObject:axisLabel];
-                }
+            NSString *axisLabelTextMonth = @"kong";
+        
+            if (myDate.isMiddleDayInMonth && myDate.index == [location intValue]) {
+                axisLabelTextMonth = [NSString stringWithFormat:@"%zd月", myDate.month];
+                
+                CPTAxisLabel *axisLabel = [self xAxisMonth:axis axisLabelAtLocation:location withText:axisLabelTextMonth];
+                [axisLabelsX addObject:axisLabel];
             }
 //        }
     }

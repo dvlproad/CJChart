@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CJDate.h"
 
 @interface NSDate (FindAllDate)
 
