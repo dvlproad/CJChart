@@ -12,7 +12,10 @@
 #import "QCPTTheme.h"
 #import "NSString+Category.h"
 
-
+static CPTTextStyle *yPositiveStyle = nil;
+static CPTTextStyle *yNegativeStyle = nil;
+static dispatch_once_t yPositiveOnce;
+static dispatch_once_t yNegativeOnce;
 
 
 //边框属性
@@ -559,197 +562,223 @@ static CGFloat standValue_Y = 55.0;
 }
 
 #pragma mark -
-#pragma mark Axis Delegate Methods
-
--(BOOL)axis:(CPTAxis *)axis shouldUpdateAxisLabelsAtLocations:(NSSet *)locations
+#pragma mark Axis Delegate Methods (X轴、Y轴标签设置)
+- (BOOL)axis:(CPTAxis *)axis shouldUpdateAxisLabelsAtLocations:(NSSet *)locations
 {
     //NSLog(@"dataForXLable->%d ?=? %d<-locationsCount", self.dataForXLable.count, locations.count);
     //注locations只代表主刻度上的那些location
+    
+    /* Y轴标签设置 */
     if (axis.coordinate == CPTCoordinateY) {
-        static CPTTextStyle *positiveStyle = nil;
-        static CPTTextStyle *negativeStyle = nil;
-        static dispatch_once_t positiveOnce;
-        static dispatch_once_t negativeOnce;
-        
         //NSFormatter *formatter = axis.labelFormatter;
-        CGFloat labelOffset    = axis.labelOffset;
-        
-        NSMutableSet *newLabels = [NSMutableSet set];
+        //CGFloat labelOffset    = axis.labelOffset;
         NSNumber *n_standValue_Y  = [NSNumber numberWithFloat:standValue_Y];
         
-        for ( NSDecimalNumber *tickLocation in locations ) {
-            //NSLog(@"tickLocation = %@: %d", tickLocation, [tickLocation intValue]);
-            
-            
-            //①、获取标签样式
-            CPTTextStyle *theLabelTextStyle = [axis.labelTextStyle mutableCopy];
-            
-
-            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-            #pragma mark 功能：对轴上不同的点设置不同的刻度标签颜色，如与standValue为标准，大于等于用一种，小于用另外一种
-            if ( [tickLocation isGreaterThanOrEqualTo:n_standValue_Y] ) {
-                dispatch_once(&positiveOnce, ^{
-                    CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-                    newStyle.color = Text_Color_isGreaterThanOrEqualTo_Y;
-                    positiveStyle = newStyle;
-                });
-                
-                theLabelTextStyle = positiveStyle;
-            }
-            else {
-                dispatch_once(&negativeOnce, ^{
-                    CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-                    newStyle.color = Text_Color_isLessThan_Y;
-                    negativeStyle = newStyle;
-                });
-                
-                theLabelTextStyle = negativeStyle;
-            }
-            //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
-            
-            
-            //②、获取标签文本
-            NSString *labelString       = [NSString stringWithFormat:@"%d", [tickLocation intValue]];
-            CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
-            
-            CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-            
-            newLabel.tickLocation = tickLocation.decimalValue;
-            newLabel.offset       = labelOffset + offset_axisConstraints_Y;
-            //newLabel.offset       = x.labelOffset + x.majorTickLength;
-            //newLabel.rotation     = CPTFloat(M_PI_4);
-            
-            
-            
-            [newLabels addObject:newLabel];
+        NSMutableSet *axisLabelsY = [NSMutableSet set];
+        for ( NSDecimalNumber *location in locations ) {
+            CPTAxisLabel *axisLabel = [self yAxis:axis axisLabelAtLocation:location withBaseValue:n_standValue_Y];
+            [axisLabelsY addObject:axisLabel];
         }
-        
-        axis.axisLabels = newLabels;
+        axis.axisLabels = axisLabelsY;
         
         return NO;
     }
     
     
-    
-    
-#pragma mark - X轴标签设置
-    //NSFormatter *formatter = axis.labelFormatter;
-    CGFloat labelOffset    = axis.labelOffset;
-    
-    NSMutableSet *newLabels = [NSMutableSet set];
-    
+    /* X轴标签设置 */
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-    #pragma mark 功能：实现缩放时候，轴标签能根据轴上的点的个数自适应，以使得不会出现轴标签密密麻麻的排在一起的情况
-    NSInteger gapNum = 1;//每间隔gapNum个刻度单位再显示。
-    if ([locations count] > UnitCount_X_Min) { //如果locations的个数超过自己规定的个数(这里设为7个)
-        gapNum = [locations count]/UnitCount_X_Min;
-        //NSLog(@"gapNum = %d", gapNum);
-    }
+#pragma mark 功能：实现缩放时候，轴标签能根据轴上的点的个数自适应，以使得不会出现轴标签密密麻麻的排在一起的情况
+    NSInteger gapNumForDay = [self getGapDistanceAtLocations:locations];
+    NSInteger gapNumForMonth = [self getGapDistanceAtLocations:locations];
     
     /*//TODO怎么动态修改x轴主刻度的间距(附：以下注释的代码无效)
-    //额外增加的代码，一般只在规定时候设置
-    NSInteger gapXScaleMajor = 1.0;//x轴主刻度的间距.注意刻度数变化的时候，势必会影响到轴上显示的刻度个数，即location的个数。
-    if ([locations count] > 28) {
-        gapXScaleMajor = locations.count/28;
-    }
-    axis.majorIntervalLength = CPTDecimalFromDouble(gapXScaleMajor);//设置x轴主刻度
-    */
+     //额外增加的代码，一般只在规定时候设置
+     NSInteger gapXScaleMajor = 1.0;//x轴主刻度的间距.注意刻度数变化的时候，势必会影响到轴上显示的刻度个数，即location的个数。
+     if ([locations count] > 28) {
+     gapXScaleMajor = locations.count/28;
+     }
+     axis.majorIntervalLength = CPTDecimalFromDouble(gapXScaleMajor);//设置x轴主刻度
+     */
     
-    for ( NSDecimalNumber *tickLocation in locations ) {
-        //NSLog(@"tickLocation = %@: %d", tickLocation, [tickLocation intValue]);
-        if ([tickLocation intValue]%gapNum == 0) {
-            
-            //①、获取标签样式
-            static CPTTextStyle *positiveStyle = nil;
-            static dispatch_once_t positiveOnce;
-            
-            CPTTextStyle *theLabelTextStyle;
-            dispatch_once(&positiveOnce, ^{
-                CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-                newStyle.color = Text_Color_Default_X;
-                positiveStyle = newStyle;
-            });
-            theLabelTextStyle = positiveStyle;
-            
-            //②、获取标签文本
+    NSMutableSet *axisLabelsX = [NSMutableSet set];
+    for ( NSDecimalNumber *location in locations ) {
+        //NSLog(@"location = %@: %d", location, [location intValue]);
+        if ([location intValue]%gapNumForDay == 0) {
+            //②、获取当前location上的标签文本值
             //NSString *labelString = [formatter stringForObjectValue:tickLocation];
             NSString *string = @"kong";
             for (int i = 0; i < self.dataForXLable.count; i++) {
                 NSDictionary *dic = [self.dataForXLable objectAtIndex:i];
-                if ([[dic valueForKey:@"x"] intValue] == [tickLocation intValue]) {
+                if ([[dic valueForKey:@"x"] intValue] == [location intValue]) {
                     NSInteger value_D = [[dic valueForKey:@"value_D"] intValue];
                     
                     if ([[dic valueForKey:@"isFirstDay"] boolValue]) {
                         NSInteger value_M = [[dic valueForKey:@"value_M"] intValue];
-                        string = [NSString stringWithFormat:@"%d.%02d",value_M,value_D];
+                        string = [NSString stringWithFormat:@"%zd.%02zd",value_M,value_D];
                     }else{
-                        string = [NSString stringWithFormat:@"%d", value_D];
+                        string = [NSString stringWithFormat:@"%zd", value_D];
                     }
+                    
+                    break;
                 }
-                
             }
             
             NSString *labelString = [NSString stringWithFormat:@"%@", string];//设置标签文本
-            CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
-            
-            CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-            
-            newLabel.tickLocation = tickLocation.decimalValue;
-            
-            newLabel.offset       = labelOffset + offset_axisConstraints_X;
-            //newLabel.offset       = x.labelOffset + x.majorTickLength;
-            //newLabel.rotation     = CPTFloat(M_PI_2);
-            
-            [newLabels addObject:newLabel];
+            CPTAxisLabel *axisLabel = [self xAxisDay:axis axisLabelAtLocation:location withText:labelString];
+            [axisLabelsX addObject:axisLabel];
         }
         
         
-        
-#pragma mark - 绘制月
-        CPTTextStyle *theLabelTextStyle;
-        static CPTTextStyle *positiveStyle = nil;
-        static dispatch_once_t positiveOnce;
-        dispatch_once(&positiveOnce, ^{
-            CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-            newStyle.color = [CPTColor redColor];
-            positiveStyle = newStyle;
-        });
-        theLabelTextStyle = positiveStyle;
-        
-        
-        
-        NSString *string = @"kong";
-        for (int i = 0; i < self.dataForXLable.count; i++) {
-            NSDictionary *dic = [self.dataForXLable objectAtIndex:i];
-            if ([[dic valueForKey:@"isMiddleDayInMonth"] boolValue] && [[dic valueForKey:@"x"] intValue] == [tickLocation intValue]) {
-                NSInteger value_M = [[dic valueForKey:@"value_M"] intValue];
-                string = [NSString stringWithFormat:@"%d月", value_M];
-                
-                
-                NSString *labelString = [NSString stringWithFormat:@"%@", string];
-                CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
-                
-                CPTAxisLabel *lbl_M = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-                
-                
-                //lbl_M.tickLocation = tickLocation.decimalValue;
-                double dValue = tickLocation.doubleValue + 0.1; //为了不让它覆盖掉之前的lable，所以加0.1，而不是整数
-                NSDecimalNumber *result = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
-                lbl_M.tickLocation = result.decimalValue;
-                
-                lbl_M.offset       = labelOffset + offset_axisConstraints_X + 20;
-                //lbl_M.offset       = x.labelOffset + x.majorTickLength;
-                //lbl_M.rotation     = CPTFloat(M_PI_4);
-                
-                [newLabels addObject:lbl_M];
+//        if ([location intValue]%gapNumForMonth == 0) {
+            //获取当前location上的标签文本值
+            NSString *string = @"kong";
+            for (int i = 0; i < self.dataForXLable.count; i++) {
+                NSDictionary *dic = [self.dataForXLable objectAtIndex:i];
+                if ([[dic valueForKey:@"isMiddleDayInMonth"] boolValue] && [[dic valueForKey:@"x"] intValue] == [location intValue]) {
+                    NSInteger value_M = [[dic valueForKey:@"value_M"] intValue];
+                    string = [NSString stringWithFormat:@"%zd月", value_M];
+                    
+                    NSString *labelString = [NSString stringWithFormat:@"%@", string];
+                    CPTAxisLabel *axisLabel = [self xAxisMonth:axis axisLabelAtLocation:location withText:labelString];
+                    [axisLabelsX addObject:axisLabel];
+                }
             }
-        }
+//        }
     }
     
-    axis.axisLabels = newLabels;
+    axis.axisLabels = axisLabelsX;
     
     return NO;//因为在这里我们自己设置了轴标签的描绘，所以这个方法返回 NO 告诉系统不需要使用系统的标签描绘设置了。
 }
+
+
+/**
+ *  计算最后绘制出来的轴刻度要以每隔多少间隔才绘制一个（以防当轴上的点过多时，如果全绘制会导致轴刻度密密麻麻的）
+ *
+ *  @return 相邻刻度的间隔（计算方法为：通过设置最大允许多少刻度来计算）
+ */
+- (NSInteger)getGapDistanceAtLocations:(NSSet *)locations {
+    NSInteger gapNum = 1;//每间隔gapNum个刻度单位再显示。
+    if ([locations count] > UnitCount_X_Min) { //如果locations的个数超过自己规定的个数(这里设为7个)
+        gapNum = [locations count]/UnitCount_X_Min;
+        NSLog(@"gapNum = %zd", gapNum);
+    }
+    return gapNum;
+}
+
+- (CPTAxisLabel *)yAxis:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withBaseValue:(NSNumber *)n_standValue_Y {
+    //NSLog(@"location = %@: %d", location, [location intValue]);
+    
+    
+    //①、获取标签样式
+    CPTTextStyle *theLabelTextStyle = [axis.labelTextStyle mutableCopy];
+    
+    
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+#pragma mark 功能：对轴上不同的点设置不同的刻度标签颜色，如与standValue为标准，大于等于用一种，小于用另外一种
+    if ( [location isGreaterThanOrEqualTo:n_standValue_Y] ) {
+        dispatch_once(&yPositiveOnce, ^{
+            CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
+            newStyle.color = Text_Color_isGreaterThanOrEqualTo_Y;
+            yPositiveStyle = newStyle;
+        });
+        
+        theLabelTextStyle = yPositiveStyle;
+    }
+    else {
+        dispatch_once(&yNegativeOnce, ^{
+            CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
+            newStyle.color = Text_Color_isLessThan_Y;
+            yNegativeStyle = newStyle;
+        });
+        
+        theLabelTextStyle = yNegativeStyle;
+    }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
+    
+    
+    //②、获取标签文本
+    NSString *labelString       = [NSString stringWithFormat:@"%d", [location intValue]];
+    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
+    
+    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
+    
+    axisLabel.tickLocation = location.decimalValue;
+    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_Y;
+    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
+    //axisLabel.rotation     = CPTFloat(M_PI_4);
+    
+    return axisLabel;
+}
+
+
+- (CPTAxisLabel *)xAxisDay:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withText:(NSString *)text {
+    //①、获取标签样式
+    static CPTTextStyle *positiveStyle = nil;
+    static dispatch_once_t positiveOnce;
+    
+    CPTTextStyle *theLabelTextStyle;
+    dispatch_once(&positiveOnce, ^{
+        CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
+        newStyle.color = Text_Color_Default_X;
+        positiveStyle = newStyle;
+    });
+    theLabelTextStyle = positiveStyle;
+    
+    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] init];
+    [newLabelLayer setText:text];
+    [newLabelLayer setTextStyle:theLabelTextStyle];
+    
+    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
+    
+    axisLabel.tickLocation = location.decimalValue;
+    
+    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X;
+    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
+    //axisLabel.rotation     = CPTFloat(M_PI_2);
+    
+    return axisLabel;
+}
+
+/**
+ *  绘制X轴上的location位置的月刻度
+ *
+ *  @param axis     坐标轴
+ *  @param location 坐标轴上的位置
+ *  @param text     坐标轴上的文本
+ *
+ *  @return 坐标刻度
+ */
+- (CPTAxisLabel *)xAxisMonth:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withText:(NSString *)text {
+    CPTTextStyle *theLabelTextStyle;
+    static CPTTextStyle *positiveStyle = nil;
+    static dispatch_once_t positiveOnce;
+    dispatch_once(&positiveOnce, ^{
+        CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
+        newStyle.color = [CPTColor redColor];
+        positiveStyle = newStyle;
+    });
+    theLabelTextStyle = positiveStyle;
+    
+    
+    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] init];
+    [newLabelLayer setText:text];
+    [newLabelLayer setTextStyle:theLabelTextStyle];
+    
+    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
+    //axisLabel.tickLocation = tickLocation.decimalValue;
+    double dValue = location.doubleValue + 0.1; //为了不让它覆盖掉之前的lable，所以加0.1，而不是整数
+    NSDecimalNumber *result = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
+    axisLabel.tickLocation = result.decimalValue;
+    
+    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X + 20;
+    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
+    //axisLabel.rotation     = CPTFloat(M_PI_4);
+    
+    return axisLabel;
+}
+
+
 
 
 //TODO 以下代码为新增
