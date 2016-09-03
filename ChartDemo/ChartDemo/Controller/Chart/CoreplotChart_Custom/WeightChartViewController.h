@@ -20,6 +20,8 @@
 #import <CJDatePickerToolBarView.h>
 #import <UIView+CJPopupView.h>
 
+#import "CJChartData.h"
+
 @interface WeightChartViewController : UIViewController<CPTPlotDataSource, CPTAxisDelegate, CPTPlotSpaceDelegate, CPTScatterPlotDelegate, UITextFieldDelegate>{//CPTScatterPlotDelegate是为了调用点击各个数据点响应操作
 //    CGFloat curValue;
 //    CGFloat tarValue;

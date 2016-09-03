@@ -72,6 +72,14 @@
 }
 
 #pragma mark - 获取距离当前日期N天的日期
+/**
+ *  获取距离当前日期N天的日期
+ *
+ *  @param num  <#num description#>
+ *  @param type <#type description#>
+ *
+ *  @return <#return value description#>
+ */
 - (NSDate *)dateDistances:(NSInteger )num type:(NSInteger)type{
     //日期转换 年月日
     NSCalendar *calendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];

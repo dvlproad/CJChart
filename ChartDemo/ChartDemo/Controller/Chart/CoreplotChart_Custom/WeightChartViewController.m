@@ -76,9 +76,6 @@ static CGFloat standValue_Y = 55.0;
 @end
 
 @implementation WeightChartViewController
-@synthesize dataForPlot;
-@synthesize lineGraph;
-@synthesize graphHostingView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -181,8 +178,8 @@ static CGFloat standValue_Y = 55.0;
     
     //一、获取真正的开头日期与结尾日期
     //①、判断：如果现有坐标刻度(X轴坐标)小于最小应有值，这里应默认将其扩大，以使得不会产生一个坐标里面只有一个刻度的效果
-    int days = [endDate dayDistanceFromDate:startDate];
-    NSLog(@"天数差为%d", days);
+    NSInteger days = [endDate dayDistanceFromDate:startDate];
+    NSLog(@"天数差为%ld", days);
     if (days < UnitCount_X_Min) {
         startDate = [endDate dateDistances:-UnitCount_X_Min+1 type:eDistanceDay];
     }
@@ -227,14 +224,17 @@ static CGFloat standValue_Y = 55.0;
             NSDate *date = [info.date standDate];
             NSInteger xValue = [date dayDistanceFromDate:startDate];
             CGFloat yValue = [info.weight floatValue];
-            [contentArray addObject:@{ @"x":@(xValue), @"y":@(yValue)}];
+            
+            CJChartData *chartData = [[CJChartData alloc] init];
+            chartData.x = xValue;
+            chartData.y = yValue;
             
             yMinValue = yValue < yMinValue ? yValue : yMinValue;
             yMaxValue = yValue > yMaxValue ? yValue : yMaxValue;
         }
         
         self.dataForPlot = contentArray;
-        self.yMin = floorf(yMinValue/5) * 5 - 5;
+        self.yMin = floorf(yMinValue/5) * 5 - 5;   //floorf 向下取整
         self.yMax = floorf(yMaxValue/5) * 5 + 6;
     }
 }
@@ -250,74 +250,169 @@ static CGFloat standValue_Y = 55.0;
     return [CPTPlotRange plotRangeWithLocation:range_beg length:range_end];
 }
 
-- (void)createCPTXYGraph{
-#pragma mark 创建基于XY轴图CPTXYGraph，并对XY轴图进行设置
-#pragma mark ———————-———————1.添加主题，设置与屏幕边缘之间的空隙
-    CPTXYGraph *newGraph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
-    
+/** 添加画布Graph的主题Theme */
+- (void)setThemeToXYGraph:(CPTXYGraph *)xyGraph {
     //CPTTheme *theme = [CPTTheme themeNamed:kCPTPlainWhiteTheme];
     CPTTheme *theme = [[QCPTTheme alloc]init];  //自定义coreplot主题
-    [newGraph applyTheme:theme];                //Graph theme
+    [xyGraph applyTheme:theme];                //Graph theme
+}
+
+/** 设置画布Graph的内边距padding、边框border */
+- (void)setupPaddingAndBorderAndBackgroundForGraph:(CPTXYGraph *)xyGraph{
+    xyGraph.paddingLeft   = 10.0;
+    xyGraph.paddingTop    = 10.0;
+    xyGraph.paddingRight  = 10.0;
+    xyGraph.paddingBottom = 10.0;
     
-    [self setupPaddingAndBorderAndBackgroundForGraph:newGraph];//Graph padding、border
-    [self setTitleForGraph:newGraph];           //Graph title
+    xyGraph.plotAreaFrame.paddingTop = 20.0;
+    xyGraph.plotAreaFrame.paddingRight = 20.0;
+    xyGraph.plotAreaFrame.paddingLeft = 50.0 ;
+    xyGraph.plotAreaFrame.paddingBottom = 40.0 ;
+    
+    /*
+     xyGraph.borderWidth = 1.0;
+     xyGraph.borderColor = [UIColor redColor].CGColor;
+     
+     xyGraph.plotAreaFrame.borderWidth = 2.0;
+     xyGraph.plotAreaFrame.borderColor = [UIColor greenColor].CGColor;
+     */
+}
+
+/** 设置画布Graph的标题GraphTitle（可设多行） */
+- (void)setTitleForXYGraph:(CPTXYGraph *)xyGraph {
+    NSString *lineOne = NSLocalizedString(@"体重趋势图", nil);
+    NSString *lineTwo = @"";
+    
+    BOOL hasAttributedStringAdditions = (&NSFontAttributeName != NULL) &&
+    (&NSForegroundColorAttributeName != NULL) &&
+    (&NSParagraphStyleAttributeName != NULL);
+    
+    if ( hasAttributedStringAdditions ) {
+        NSMutableAttributedString *graphTitle = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n%@", lineOne, lineTwo]];
+        
+        [graphTitle addAttribute:NSForegroundColorAttributeName
+                           value:GraphTitle_color
+                           range:NSMakeRange(0, lineOne.length)];
+        
+        [graphTitle addAttribute:NSForegroundColorAttributeName
+                           value:[UIColor lightGrayColor]
+                           range:NSMakeRange(lineOne.length + 1, lineTwo.length)];
+        
+        NSMutableParagraphStyle *paragraphStyle =[[NSMutableParagraphStyle alloc]init];
+        paragraphStyle.alignment = CPTTextAlignmentCenter;
+        [graphTitle addAttribute:NSParagraphStyleAttributeName
+                           value:paragraphStyle
+                           range:NSMakeRange(0, graphTitle.length)];
+        
+        UIFont *titleFont = [UIFont fontWithName:@"Helvetica-Bold" size:GraphTitle_fontSize];
+        [graphTitle addAttribute:NSFontAttributeName
+                           value:titleFont
+                           range:NSMakeRange(0, lineOne.length)];
+        
+        titleFont = [UIFont fontWithName:@"Helvetica" size:12.0];
+        [graphTitle addAttribute:NSFontAttributeName
+                           value:titleFont
+                           range:NSMakeRange(lineOne.length + 1, lineTwo.length)];
+        
+        xyGraph.attributedTitle = graphTitle;
+    }else {
+        CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
+        titleStyle.color         = [CPTColor whiteColor];
+        titleStyle.fontName      = @"Helvetica-Bold";
+        titleStyle.fontSize      = GraphTitle_fontSize;
+        titleStyle.textAlignment = CPTTextAlignmentCenter;
+        
+        xyGraph.title          = [NSString stringWithFormat:@"%@\n%@", lineOne, lineTwo];
+        xyGraph.titleTextStyle = titleStyle;
+    }
+    xyGraph.titleDisplacement        = GraphTitle_titleDisplacement;
+    xyGraph.titlePlotAreaFrameAnchor = CPTRectAnchorTopLeft;
+}
+
+- (void)setCommonSettingXYPlotSpace:(CPTXYPlotSpace *)xyPlotSpace {
+    //设置移动时的停止动画这些参数（保持默认即可变化不大）
+    xyPlotSpace.momentumAnimationCurve = CPTAnimationCurveCubicIn;
+    xyPlotSpace.bounceAnimationCurve = CPTAnimationCurveBackIn;
+    xyPlotSpace.momentumAcceleration = 20000.0;
+    [xyPlotSpace setAllowsMomentumX:YES];
+}
+
+/** 设置显示和移动范围 */
+- (void)setXYRangeAndXYGlobalRangeForXYPlotSpace:(CPTXYPlotSpace *)xyPlotSpace {
+    //①、设置轴量度范围：起点, 长度
+    xyPlotSpace.xRange = [self getPlotRangeBy_valueMin:self.xMax-UnitCount_X_Default valueMax:self.xMax]; //只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
+    xyPlotSpace.yRange = [self getPlotRangeBy_valueMin:self.yMin valueMax:self.yMax-0.1];
+    
+    //②、设置轴滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
+    xyPlotSpace.globalXRange = [self getPlotRangeBy_valueMin:self.xMin+0.1 valueMax:self.xMax-0.1];
+    xyPlotSpace.globalYRange = xyPlotSpace.yRange;
     
     
-    self.lineGraph = newGraph;
-    self.graphHostingView.hostedGraph     = newGraph;
+    xyPlotSpace.allowsUserInteraction = YES;  //是否允许拖动
+    //    [self.graphHostingView setAllowPinchScaling:NO];//禁止缩放：（两指捏扩动作,默认允许）
+    
+    //TODO
+    xPlotRange = xyPlotSpace.globalXRange;
+    yPlotRange = xyPlotSpace.yRange;
+}
+
+- (void)createCPTXYGraph {
+#pragma mark 创建基于XY轴图CPTXYGraph，并对XY轴图进行设置
+#pragma mark ———————-———————1.添加主题，标题，设置与屏幕边缘之间的空隙
+    CPTXYGraph *xyGraph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
+    
+    [self setThemeToXYGraph:xyGraph];
+    [self setTitleForXYGraph:xyGraph];           //画布Graph的标题title
+    [self setupPaddingAndBorderAndBackgroundForGraph:xyGraph];//画布Graph的内边距padding、边框border
+    
+    
+    self.lineGraph = xyGraph;
+    self.graphHostingView.hostedGraph     = xyGraph;
     self.graphHostingView.collapsesLayers = NO; // Setting to YES reduces GPU memory usage, but can slow drawing/scrolling
     self.graphHostingView.allowPinchScaling = YES;
     
     
     
-#pragma mark ———————-———————2.设置可视空间CPTPlotSpace
-    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)newGraph.defaultPlotSpace;
-    
-    //设置移动时的停止动画这些参数（保持默认即可变化不大）
-    plotSpace.momentumAnimationCurve = CPTAnimationCurveCubicIn;
-    plotSpace.bounceAnimationCurve = CPTAnimationCurveBackIn;
-    plotSpace.momentumAcceleration = 20000.0;
-    [plotSpace setAllowsMomentumX:YES];
-    
-    //①、设置轴量度范围：起点, 长度
-    plotSpace.xRange = [self getPlotRangeBy_valueMin:self.xMax-UnitCount_X_Default valueMax:self.xMax];
-    plotSpace.yRange = [self getPlotRangeBy_valueMin:self.yMin valueMax:self.yMax-0.1];
-    
-    //②、设置轴滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
-    plotSpace.globalXRange = [self getPlotRangeBy_valueMin:self.xMin+0.1 valueMax:self.xMax-0.1];
-    plotSpace.globalYRange = plotSpace.yRange;
-    
-    
-    plotSpace.allowsUserInteraction = YES;  //是否允许拖动
-    //    [self.graphHostingView setAllowPinchScaling:NO];//禁止缩放：（两指捏扩动作,默认允许）
-    [plotSpace setDelegate:self];//用来设置缩放操作.注意：这里需要等到设置完plotSpace的xyRange和globalXYRange之后，才能设置setDelegate。否则会出现坐标轴为空的原因是否是delegate方法中有部分数据需要这里的range呢？
-    
-    //TODO
-    xPlotRange = plotSpace.globalXRange;
-    yPlotRange = plotSpace.yRange;
-    
-    
-    
+#pragma mark ———————-———————2.设置可视空间CPTXYPlotSpace
+    CPTXYPlotSpace *xyPlotSpace = (CPTXYPlotSpace *)xyGraph.defaultPlotSpace;
+    [self setCommonSettingXYPlotSpace:xyPlotSpace];
+    [self setXYRangeAndXYGlobalRangeForXYPlotSpace:xyPlotSpace];
+    [xyPlotSpace setDelegate:self];//用来设置缩放操作.注意：这里需要等到设置完plotSpace的xyRange和globalXYRange之后，才能设置setDelegate。否则会出现坐标轴为空的原因是否是delegate方法中有部分数据需要这里的range呢？
     
 #pragma mark ———————-———————3.设置两个轴 CPTXYAxis
     // Axes设置x,y轴属性，如原点，量度间隔，标签，刻度，颜色等
-    CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;//获取XYGraph的轴的集合,其中包括xAxis和yAxis
-    CPTXYAxis *x = axisSet.xAxis;
-    CPTXYAxis *y = axisSet.yAxis;
-    [self setupCoordinateX:x];
-    [self setupCoordinateY:y];
+    CPTXYAxisSet *xyAxisSet = (CPTXYAxisSet *)xyGraph.axisSet;//获取XYGraph的轴的集合,其中包括xAxis和yAxis
+    CPTXYAxis *xAxis = xyAxisSet.xAxis;
+    CPTXYAxis *yAxis = xyAxisSet.yAxis;
+    [self setupCoordinateXAxis:xAxis];
+    [self setupCoordinateYAxis:yAxis];
     
-    //由于轴标题的固定也需要考虑缩放等的变化，且无法直接在初始设置时候固定，所以，这里轴标题的位置设置没写到轴的基本设置的方法里。
-    x.titleLocation = [CoreplotUtil calculateTitleLocationByCurRange:plotSpace.xRange];//固定轴标题
-    y.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
+    [self setTitleForXAxis:xAxis byCurrentXRange:xyPlotSpace.xRange];
+    [self setTitleForYAxis:yAxis];
     
-    x.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
-    y.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
+    xAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
+    yAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
     
 
     
 #pragma mark 添加曲线图CPTScatterPlot
-    [self addScatterPlotForGraph:newGraph];
+    [self addScatterPlotForGraph:xyGraph];
+}
+
+/** 根据当前x轴范围，设置标题及其位置（位置的计算是用来“实现固定轴标题”的目的的，轴标题的固定是需要考虑缩放等的变化的） */
+- (void)setTitleForXAxis:(CPTXYAxis *)xAxis byCurrentXRange:(CPTPlotRange *)xRange {
+    xAxis.title = @"时间";
+    xAxis.titleDirection = CPTSignNegative;
+    xAxis.titleOffset += offset_axisConstraints_X + adn_titleOffset_X;
+    xAxis.titleLocation = [CoreplotUtil calculateTitleLocationByCurRange:xRange];//固定轴标题
+}
+
+- (void)setTitleForYAxis:(CPTXYAxis *)yAxis {
+    yAxis.title = @"体重(Kg)";
+    yAxis.titleDirection = CPTSignNegative;
+    //yAxis.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
+    yAxis.titleOffset += offset_axisConstraints_Y + adn_titleOffset_Y;
+    yAxis.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
 }
 
 
@@ -360,114 +455,36 @@ static CGFloat standValue_Y = 55.0;
 }
 
 
-#pragma mark - 设置画布边距、以及边框
-- (void)setupPaddingAndBorderAndBackgroundForGraph:(CPTXYGraph *)newGraph{
-    newGraph.paddingLeft   = 10.0;
-    newGraph.paddingTop    = 10.0;
-    newGraph.paddingRight  = 10.0;
-    newGraph.paddingBottom = 10.0;
-    
-    newGraph.plotAreaFrame.paddingTop = 20.0;
-    newGraph.plotAreaFrame.paddingRight = 20.0;
-    newGraph.plotAreaFrame.paddingLeft = 50.0 ;
-    newGraph.plotAreaFrame.paddingBottom = 40.0 ;
-    
-    /*
-     newGraph.borderWidth = 1.0;
-     newGraph.borderColor = [UIColor redColor].CGColor;
-     
-     newGraph.plotAreaFrame.borderWidth = 2.0;
-     newGraph.plotAreaFrame.borderColor = [UIColor greenColor].CGColor;
-     */
-}
-
-#pragma mark - 设置画布标题GraphTitle（可设多行）
-- (void)setTitleForGraph:(CPTXYGraph *)newGraph{
-    NSString *lineOne = NSLocalizedString(@"体重趋势图", nil);
-    NSString *lineTwo = @"";
-    
-    BOOL hasAttributedStringAdditions = (&NSFontAttributeName != NULL) &&
-    (&NSForegroundColorAttributeName != NULL) &&
-    (&NSParagraphStyleAttributeName != NULL);
-    
-    if ( hasAttributedStringAdditions ) {
-        NSMutableAttributedString *graphTitle = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n%@", lineOne, lineTwo]];
-        
-        [graphTitle addAttribute:NSForegroundColorAttributeName
-                           value:GraphTitle_color
-                           range:NSMakeRange(0, lineOne.length)];
-        
-        [graphTitle addAttribute:NSForegroundColorAttributeName
-                           value:[UIColor lightGrayColor]
-                           range:NSMakeRange(lineOne.length + 1, lineTwo.length)];
-        
-        NSMutableParagraphStyle *paragraphStyle =[[NSMutableParagraphStyle alloc]init];
-        paragraphStyle.alignment = CPTTextAlignmentCenter;
-        [graphTitle addAttribute:NSParagraphStyleAttributeName
-                           value:paragraphStyle
-                           range:NSMakeRange(0, graphTitle.length)];
-        
-        UIFont *titleFont = [UIFont fontWithName:@"Helvetica-Bold" size:GraphTitle_fontSize];
-        [graphTitle addAttribute:NSFontAttributeName
-                           value:titleFont
-                           range:NSMakeRange(0, lineOne.length)];
-        
-        titleFont = [UIFont fontWithName:@"Helvetica" size:12.0];
-        [graphTitle addAttribute:NSFontAttributeName
-                           value:titleFont
-                           range:NSMakeRange(lineOne.length + 1, lineTwo.length)];
-        
-        newGraph.attributedTitle = graphTitle;
-    }else {
-        CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
-        titleStyle.color         = [CPTColor whiteColor];
-        titleStyle.fontName      = @"Helvetica-Bold";
-        titleStyle.fontSize      = GraphTitle_fontSize;
-        titleStyle.textAlignment = CPTTextAlignmentCenter;
-        
-        newGraph.title          = [NSString stringWithFormat:@"%@\n%@", lineOne, lineTwo];
-        newGraph.titleTextStyle = titleStyle;
-    }
-    newGraph.titleDisplacement        = GraphTitle_titleDisplacement;
-    newGraph.titlePlotAreaFrameAnchor = CPTRectAnchorTopLeft;
-}
 
 
 #pragma mark - 设置坐标轴
-- (void)setupCoordinateX:(CPTXYAxis *)x{
+- (void)setupCoordinateXAxis:(CPTXYAxis *)xAxis {
 #pragma mark  ①、设置X轴坐标(能实现固定坐标轴位置，即使是在缩放的时候)
     //针对该坐标想要固定的点在该轴上的位置相对view是否始终不变(会改变的情况：比如轴原点位置改变，轴缩放）的情况可有设置orthogonalCoordinateDecimal和设置axisConstraints两种不同方法，其中设置axisConstraints是最强方法，且注意使用axisConstraints后，原本orthogonalCoordinateDecimal将会自动变成永远无效，所以使用axisConstraints的时候，可不设置orthogonalCoordinateDecimal
     //方法：设置轴位置
     //方法①：始终不变，则可直接使用orthogonalCoordinateDecimal“固定”（其实只是设置而已）。
     //方法②：会改变，则应该使用axisConstraints真正固定
     //x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(standValue_Y);//设置x轴的原点位置
-    x.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
+    xAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
     
     //设置轴大小：轴主刻度间距长度、轴主刻度间细分刻度个数
-    x.majorIntervalLength   = CPTDecimalFromDouble(1.0);//设置x轴主刻度：每多少长度显示一个刻度
-    x.minorTicksPerInterval = 0;                        //设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数。注：如果没有细分刻度，则应该写0，而不是1
+    xAxis.majorIntervalLength   = CPTDecimalFromDouble(1.0);//设置x轴主刻度：每多少长度显示一个刻度
+    xAxis.minorTicksPerInterval = 0;                        //设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数。注：如果没有细分刻度，则应该写0，而不是1
     
     //设置轴方向：坐标轴刻度方向、以及轴标签方向(CPTSignPositive正极朝向绘图区，CPTSignNegative负极朝外)
-    x.tickDirection = CPTSignPositive;
-    x.tickLabelDirection = CPTSignNegative;
+    xAxis.tickDirection = CPTSignPositive;
+    xAxis.tickLabelDirection = CPTSignNegative;
     
     //设置主刻度线、细刻度线（颜色、宽度）
     CPTMutableLineStyle *lineStyle = [CPTMutableLineStyle lineStyle];//创建了一个可编辑的线条风格lineStyle，用来描述描绘线条的宽度，颜色和样式等，这个 lineStyle 会被多次用到。
     lineStyle.miterLimit        = 1.0;
     lineStyle.lineColor         = [CPTColor blueColor];  //线条颜色
     
-    lineStyle.lineWidth         = 1.0;  //线条宽度
-    x.majorTickLineStyle = lineStyle;
+    lineStyle.lineWidth         = 10.0;  //线条宽度
+    xAxis.majorTickLineStyle = lineStyle;
     
-    lineStyle.lineWidth         = 0.5;
-    x.minorTickLineStyle = lineStyle;
-    
-#pragma mark  ②、设置X轴标题(实现固定轴标题，即使是在缩放的时候，若要实现该功能，得在)
-    x.title = @"时间";
-    x.titleDirection = CPTSignNegative;
-    x.titleOffset += offset_axisConstraints_X + adn_titleOffset_X;
-//    x.titleLocation = [CoreplotUtil calculateTitleLocationByCurRange:plotSpace.xRange];//固定轴标题
-
+    lineStyle.lineWidth         = 2.5;
+    xAxis.minorTickLineStyle = lineStyle;
     
 #pragma mark  ③、设置X轴其他设置（比如：实现哪些范围不显示轴信息（轴信息包含轴刻度和轴标签））
     /*
@@ -478,25 +495,20 @@ static CGFloat standValue_Y = 55.0;
     */
     
     
-    x.plotArea.borderWidth = border_Width_plotArea;
-    x.plotArea.borderColor = border_Color_plotArea;
+    xAxis.plotArea.borderWidth = border_Width_plotArea;
+    xAxis.plotArea.borderColor = border_Color_plotArea;
     
     
     
 }
 
-- (void)setupCoordinateY:(CPTXYAxis *)y{
+- (void)setupCoordinateYAxis:(CPTXYAxis *)yAxis {
     //y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(2.0);
-    y.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
-    y.majorIntervalLength         = CPTDecimalFromDouble(5.0);
-    y.minorTicksPerInterval       = 4;
-    y.tickDirection = CPTSignPositive;
-    y.tickLabelDirection = CPTSignNegative;
-    
-    y.title = @"体重(Kg)";
-    y.titleDirection = CPTSignNegative;
-    //y.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
-    y.titleOffset += offset_axisConstraints_Y + adn_titleOffset_Y;
+    yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
+    yAxis.majorIntervalLength         = CPTDecimalFromDouble(5.0);
+    yAxis.minorTicksPerInterval       = 4;
+    yAxis.tickDirection = CPTSignPositive;
+    yAxis.tickLabelDirection = CPTSignNegative;
     
     
     
@@ -504,7 +516,7 @@ static CGFloat standValue_Y = 55.0;
                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
                                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99) length:CPTDecimalFromDouble(0.02)]];
-    y.labelExclusionRanges = exclusionRanges_Y;
+    yAxis.labelExclusionRanges = exclusionRanges_Y;
 }
 
 
@@ -516,9 +528,10 @@ static CGFloat standValue_Y = 55.0;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 #pragma mark - 给折现上的点添加值（plot添加值的折现  index点的位置 ）//参考饼状图CPTPieChartViewController的绘制
 - (CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)idx{
-    NSNumber *num=[[self.dataForPlot objectAtIndex:idx] valueForKey:@"y"];
+    CJChartData *chartData = [self.dataForPlot objectAtIndex:idx];
+    NSString *yText = [NSString stringWithFormat:@"%.1f", chartData.y];
     
-    CPTTextLayer *label = [[CPTTextLayer alloc] initWithText:[NSString stringWithFormat:@"%.1f", [num floatValue]]];
+    CPTTextLayer *label = [[CPTTextLayer alloc] initWithText:yText];
     
     CPTMutableTextStyle *textStyle = [label.textStyle mutableCopy];
     
@@ -535,7 +548,7 @@ static CGFloat standValue_Y = 55.0;
 - (void)scatterPlot:(CPTScatterPlot *)plot plotSymbolWasSelectedAtRecordIndex:(NSUInteger)idx{
     
     NSDecimalNumber *deNumber = [NSDecimalNumber decimalNumberWithDecimal:plot.areaBaseValue];//NSDecimal转为NSDecimalNumber
-    NSLog(@"idx = %d, %f, %f, %@, %@", idx, plot.labelOffset, [deNumber floatValue], NSStringFromCGRect(plot.contentsRect), NSStringFromCGPoint(plot.position));
+    NSLog(@"idx = %zd, %f, %f, %@, %@", idx, plot.labelOffset, [deNumber floatValue], NSStringFromCGRect(plot.contentsRect), NSStringFromCGPoint(plot.position));
     //plot.plotArea.axisSet;
     //TODO怎么获取所点击的坐标点的位置
     
@@ -546,23 +559,24 @@ static CGFloat standValue_Y = 55.0;
 
 
 #pragma mark -
-#pragma mark Plot Data Source Methods 实现数据源协议
-
--(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
-{
+#pragma mark - CPTPlotDataSource 实现数据源协议
+- (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
     return self.dataForPlot.count;
 }
 
--(id)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
-{
-    NSString *key = (fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y");
-    NSNumber *num = self.dataForPlot[index][key];
+- (id)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
+    CJChartData *chartData = [self.dataForPlot objectAtIndex:index];
     
-    return num;
+    NSNumber *number = nil;
+    if (fieldEnum == CPTScatterPlotFieldX) {
+        number = [NSNumber numberWithFloat:chartData.x];
+    } else {
+        number = [NSNumber numberWithFloat:chartData.y];
+    }
+    return number;
 }
 
-#pragma mark -
-#pragma mark Axis Delegate Methods (X轴、Y轴标签设置)
+#pragma mark - CPTAxisDelegate (X轴、Y轴标签设置)
 - (BOOL)axis:(CPTAxis *)axis shouldUpdateAxisLabelsAtLocations:(NSSet *)locations
 {
     //NSLog(@"dataForXLable->%d ?=? %d<-locationsCount", self.dataForXLable.count, locations.count);
@@ -588,7 +602,7 @@ static CGFloat standValue_Y = 55.0;
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 #pragma mark 功能：实现缩放时候，轴标签能根据轴上的点的个数自适应，以使得不会出现轴标签密密麻麻的排在一起的情况
     NSInteger gapNumForDay = [self getGapDistanceAtLocations:locations];
-    NSInteger gapNumForMonth = [self getGapDistanceAtLocations:locations];
+    NSInteger gapNumForMonth = [self getGapDistanceForMonthAtLocations:locations];
     
     /*//TODO怎么动态修改x轴主刻度的间距(附：以下注释的代码无效)
      //额外增加的代码，一般只在规定时候设置
@@ -624,17 +638,17 @@ static CGFloat standValue_Y = 55.0;
         }
         
         
-//        if ([location intValue]%gapNumForMonth == 0) {
+        if ([location intValue]%gapNumForMonth == 0) {
             //获取当前location上的标签文本值
             NSString *axisLabelTextMonth = @"kong";
         
-            if (myDate.isMiddleDayInMonth && myDate.index == [location intValue]) {
+            if (myDate.isMiddleDayInMonth) {
                 axisLabelTextMonth = [NSString stringWithFormat:@"%zd月", myDate.month];
                 
                 CPTAxisLabel *axisLabel = [self xAxisMonth:axis axisLabelAtLocation:location withText:axisLabelTextMonth];
                 [axisLabelsX addObject:axisLabel];
             }
-//        }
+        }
     }
     
     axis.axisLabels = axisLabelsX;
@@ -650,8 +664,20 @@ static CGFloat standValue_Y = 55.0;
  */
 - (NSInteger)getGapDistanceAtLocations:(NSSet *)locations {
     NSInteger gapNum = 1;//每间隔gapNum个刻度单位再显示。
-    if ([locations count] > UnitCount_X_Min) { //如果locations的个数超过自己规定的个数(这里设为7个)
-        gapNum = [locations count]/UnitCount_X_Min;
+    NSInteger maxTickShowNumber = UnitCount_X_Min; //设置坐标轴最多展示多少个刻度
+    if ([locations count] > maxTickShowNumber) { //如果locations的个数超过自己规定的个数(这里设为7个)
+        gapNum = [locations count]/maxTickShowNumber;
+        NSLog(@"gapNum = %zd", gapNum);
+    }
+    return gapNum;
+}
+
+
+- (NSInteger)getGapDistanceForMonthAtLocations:(NSSet *)locations {
+    NSInteger gapNum = 1;
+    NSInteger maxTickShowNumber = UnitCount_X_Min; //设置坐标轴最多展示多少个刻度
+    if ([locations count] > maxTickShowNumber) {
+        gapNum = [locations count]/maxTickShowNumber; //设置"月"行最多展示
         NSLog(@"gapNum = %zd", gapNum);
     }
     return gapNum;
@@ -726,7 +752,7 @@ static CGFloat standValue_Y = 55.0;
     
     axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X;
     //axisLabel.offset       = x.labelOffset + x.majorTickLength;
-    //axisLabel.rotation     = CPTFloat(M_PI_2);
+    axisLabel.rotation     = CPTFloat(M_PI_2);
     
     return axisLabel;
 }
