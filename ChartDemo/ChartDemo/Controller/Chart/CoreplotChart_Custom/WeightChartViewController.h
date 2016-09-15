@@ -49,7 +49,4 @@
 @property(nonatomic, strong) NSMutableArray *datas;
 
 
-- (void)getInfoL_WeightChart;
-- (void)reShowUI_WeightChart;
-
 @end

@@ -11,7 +11,7 @@
 
 #define kADWKeyUID      @"uid"
 #define kADWKeyDate     @"date"
-#define kADWKeyWID      @"id"
+#define kADWKeyWID      @"wid"
 #define kADWKeyWeight   @"weight"
 #define kADWKeyModified @"modified"
 #define kADWKeyExecType @"is_delete"

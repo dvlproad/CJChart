@@ -29,7 +29,7 @@
     }
     
     
-    picker_birthday.datePicker.date = [dateFormatter dateFromString:@"1989-12-27"];
+    picker_birthday.datePicker.date = [dateFormatter dateFromString:@"2014-12-27"];
     
     [picker_birthday cj_popupInWindowAtPosition:CJWindowPositionBottom
                                   animationType:CJAnimationTypeNormal
@@ -47,7 +47,7 @@
     NSString *value = [NSString stringWithFormat:@"%@", selDate];
     [[[UIAlertView alloc]initWithTitle:@"所选日期为" message:value delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
     
-    [pickerToolBarView dismiss];
+    [pickerToolBarView cj_hidePopupView];
 }
 
 - (void)valueChangeDelegate_datePicker:(CJDatePickerToolBarView *)pickerToolBarView{

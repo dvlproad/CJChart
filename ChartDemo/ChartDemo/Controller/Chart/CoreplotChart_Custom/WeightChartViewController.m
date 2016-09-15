@@ -77,27 +77,17 @@ static CGFloat standValue_Y = 55.0;
 
 @implementation WeightChartViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //耗时的操作
         //sleep(5);
-        [self getInfoL_WeightChart];
+        [self getLocalInfoForWeight];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             //更新界面
-            [self reShowUI_WeightChart];
+            [self reloadUIForWeight];
         });
     });
     
@@ -133,20 +123,27 @@ static CGFloat standValue_Y = 55.0;
     
     ADWInfo *info = [[ADWInfo alloc]init];
     info.uid = self.uid;
-    info.date = @"2015-03-10";
+    info.date = @"2016-08-29";
     info.wid = @"10001";
     info.weight = @"72";
     info.modified = @"1013513515";
-
     [ADWFMDBUtil insertInfo:info];
     
-
-    info.date = @"2015-04-09";
-    info.wid = @"10002";
-    info.weight = @"70";
-    info.modified = @"1013513515";
+    ADWInfo *info2 = [[ADWInfo alloc]init];
+    info2.uid = self.uid;
+    info2.date = @"2016-09-04";
+    info2.wid = @"10002";
+    info2.weight = @"70";
+    info2.modified = @"1013513516";
+    [ADWFMDBUtil insertInfo:info2];
     
-    [ADWFMDBUtil insertInfo:info];
+    ADWInfo *info3 = [[ADWInfo alloc]init];
+    info3.uid = self.uid;
+    info3.date = @"2016-09-09";
+    info3.wid = @"10003";
+    info3.weight = @"65";
+    info3.modified = @"1013513517";
+    [ADWFMDBUtil insertInfo:info3];
 }
 
 
@@ -156,45 +153,45 @@ static CGFloat standValue_Y = 55.0;
 }
 
 
-
-- (void)getInfoL_WeightChart{
+/** 获取本地数据库中的体重数据 */
+- (void)getLocalInfoForWeight {
     self.datas = [ADWFMDBUtil selectInfoArrayWhereUID:self.uid];
+    NSLog(@"self.datas = %@", self.datas);
 }
 
-- (void)reShowUI_WeightChart{
-    NSDate *startDate = [NSDate date];
+/** 更新体重的UI */
+- (void)reloadUIForWeight {
+    /* 1、获取数据的开头日期和结尾日期 */
+    NSDate *dateBegin = [NSDate date];
+    NSDate *dateEnd = [NSDate date];
     if ([self.datas count] != 0) {
         ADWInfo *info = [self.datas objectAtIndex:0];
-        startDate = [info.date standDate];
+        dateBegin = [info.date standDate];
     }
     
-    NSDate *endDate = [NSDate date];
-    
-    [self reloadUIByStartDate:startDate endDate:endDate];
-}
-
-
-- (void)reloadUIByStartDate:(NSDate *)startDate endDate:(NSDate *)endDate{
-    
-    //一、获取真正的开头日期与结尾日期
+    /* 2、获取坐标轴上显示的开头日期和结尾日期 */
     //①、判断：如果现有坐标刻度(X轴坐标)小于最小应有值，这里应默认将其扩大，以使得不会产生一个坐标里面只有一个刻度的效果
-    NSInteger days = [endDate dayDistanceFromDate:startDate];
-    NSLog(@"天数差为%ld", days);
-    if (days < UnitCount_X_Min) {
-        startDate = [endDate dateDistances:-UnitCount_X_Min+1 type:eDistanceDay];
+    NSInteger dayDistance = [dateEnd dayDistanceFromDate:dateBegin];
+    NSLog(@"天数差为%ld", dayDistance);
+    if (dayDistance < UnitCount_X_Min) {
+        dateBegin = [dateEnd dateDistances:-UnitCount_X_Min+1 type:eDistanceDay];
     }
     
     //②、增加：开始日期提前一点，结束日期延后一点，以使得能保证所有的数据都不会显示在边界上，而造成不好的效果
-    startDate = [startDate dateDistances:-UnitCount_Placeholder_Begin type:eDistanceDay];
-    endDate = [endDate dateDistances:UnitCount_Placeholder_Last type:eDistanceDay];
+    NSDate *showDateBegin = [dateBegin dateDistances:-UnitCount_Placeholder_Begin type:eDistanceDay];
+    NSDate *showDateEnd = [dateEnd dateDistances:UnitCount_Placeholder_Last type:eDistanceDay];
 
     
+    [self reloadUIByShowDateBegin:showDateBegin showDateEnd:showDateEnd];
+}
+
+- (void)reloadUIByShowDateBegin:(NSDate *)showDateBegin showDateEnd:(NSDate *)showDateEnd {
     //获取两个坐标轴各自的最大值、最小值，以使得能确定坐标轴的范围，
     //横轴上通过日期数据(开始日期以及结束日期)，来获取该坐标轴的最大值、最小值，以使得之后能确定坐标轴的范围。
     //纵轴上通过用户体重值数据，来获取该坐标轴的最大值、最小值，以使得之后能确定坐标轴的范围。
     //同时横轴上将日期数据Y转为XY数据，以作之后轴标签数据、纵轴上用户体重数据（也是日期Y）也改为XY形式的数据，以作之后坐标系上的店的数据
-    [self xlabel_changeDateYToXY_byXBeginDate:startDate toDate:endDate];
-    [self plot_changeDateYToXY_byXBeginDate:startDate withDataArray:self.datas];
+    [self xlabel_changeDateYToXY_byXBeginDate:showDateBegin toDate:showDateEnd];
+    [self plot_changeDateYToXY_byXBeginDate:showDateBegin withDataArray:self.datas];
     
     [self createCPTXYGraph];
     //    [self.graphHostingView.hostedGraph reloadData];//刷新画板
@@ -209,10 +206,10 @@ static CGFloat standValue_Y = 55.0;
 //将原本的每个日期转为对应的X，以方便显示，竖轴Y不变.
 - (void)plot_changeDateYToXY_byXBeginDate:(NSDate *)startDate withDataArray:(NSArray *)datas{
 
-    NSMutableArray *contentArray = [[NSMutableArray alloc]init];
+    NSMutableArray *dataForPlot = [[NSMutableArray alloc]init];
     
     if (datas.count == 0) {
-        self.dataForPlot = contentArray;
+        self.dataForPlot = dataForPlot;
         self.yMin = standValue_Y - 5;
         self.yMax = standValue_Y + 6;
         
@@ -231,21 +228,16 @@ static CGFloat standValue_Y = 55.0;
             
             yMinValue = yValue < yMinValue ? yValue : yMinValue;
             yMaxValue = yValue > yMaxValue ? yValue : yMaxValue;
+            
+            [dataForPlot addObject:chartData];
         }
         
-        self.dataForPlot = contentArray;
+        self.dataForPlot = dataForPlot;
         self.yMin = floorf(yMinValue/5) * 5 - 5;   //floorf 向下取整
         self.yMax = floorf(yMaxValue/5) * 5 + 6;
     }
 }
 
-
-
-
-
-- (CPTPlotRange *)getPlotRangeBy_valueMin:(CGFloat)valueMin valueMax:(CGFloat)valueMax{
-    return [CPTPlotRange plotRangeWithLocation:@(valueMin) length:@(valueMax - valueMin)];
-}
 
 /** 添加画布Graph的主题Theme */
 - (void)setThemeToXYGraph:(CPTXYGraph *)xyGraph {
@@ -337,11 +329,20 @@ static CGFloat standValue_Y = 55.0;
 /** 设置显示和移动范围 */
 - (void)setXYRangeAndXYGlobalRangeForXYPlotSpace:(CPTXYPlotSpace *)xyPlotSpace {
     //①、设置轴量度范围：起点, 长度
-    xyPlotSpace.xRange = [self getPlotRangeBy_valueMin:self.xMax-UnitCount_X_Default valueMax:self.xMax]; //只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
-    xyPlotSpace.yRange = [self getPlotRangeBy_valueMin:self.yMin valueMax:self.yMax-0.1];
+    CGFloat showXMin = self.xMax-UnitCount_X_Default;//只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
+    CGFloat showXMax = self.xMax;
+    
+    CGFloat showYMin = self.yMin;
+    CGFloat showYMax = self.yMax-0.1;
+    
+    xyPlotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(showXMin) length:@(showXMax - showXMin)];
+    xyPlotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(showYMin) length:@(showYMax - showYMin)];
+    
     
     //②、设置轴滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
-    xyPlotSpace.globalXRange = [self getPlotRangeBy_valueMin:self.xMin+0.1 valueMax:self.xMax-0.1];
+    CGFloat globalXMin = self.xMin + 0.1;
+    CGFloat globalXMax = self.xMax - 0.1;
+    xyPlotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:@(globalXMin) length:@(globalXMax - globalXMin)];
     xyPlotSpace.globalYRange = xyPlotSpace.yRange;
     
     
@@ -352,6 +353,12 @@ static CGFloat standValue_Y = 55.0;
     xPlotRange = xyPlotSpace.globalXRange;
     yPlotRange = xyPlotSpace.yRange;
 }
+
+/*
+- (CPTPlotRange *)getPlotRangeWithMin:(CGFloat)min max:(CGFloat)max {
+    return [CPTPlotRange plotRangeWithLocation:@(min) length:@(max - min)];
+}
+*/
 
 - (void)createCPTXYGraph {
 #pragma mark 创建基于XY轴图CPTXYGraph，并对XY轴图进行设置

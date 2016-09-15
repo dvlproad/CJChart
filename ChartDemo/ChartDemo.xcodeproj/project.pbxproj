@@ -11,6 +11,7 @@
 		6B991AF09C4FDF754ECAE57A /* libPods-ChartDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01E12DCA3EAE10F89240AE86 /* libPods-ChartDemo.a */; };
 		78524ADF1D633BA3004C0CAA /* CJDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 78524ADE1D633BA3004C0CAA /* CJDate.m */; };
 		7855401E1D7ADB3C008D22FD /* CJChartData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7855401D1D7ADB3C008D22FD /* CJChartData.m */; };
+		78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F5E3F41D8ACA8600320334 /* CJDateUti.m */; };
 		808CBA901B735A3300EDFFB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA8F1B735A3300EDFFB9 /* main.m */; };
 		808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA921B735A3300EDFFB9 /* AppDelegate.m */; };
 		808CBA961B735A3300EDFFB9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA951B735A3300EDFFB9 /* ViewController.m */; };
@@ -73,6 +74,8 @@
 		78524ADE1D633BA3004C0CAA /* CJDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDate.m; sourceTree = "<group>"; };
 		7855401C1D7ADB3C008D22FD /* CJChartData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartData.h; sourceTree = "<group>"; };
 		7855401D1D7ADB3C008D22FD /* CJChartData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartData.m; sourceTree = "<group>"; };
+		78F5E3F31D8ACA8600320334 /* CJDateUti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDateUti.h; sourceTree = "<group>"; };
+		78F5E3F41D8ACA8600320334 /* CJDateUti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDateUti.m; sourceTree = "<group>"; };
 		808CBA8A1B735A3300EDFFB9 /* ChartDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		808CBA8E1B735A3300EDFFB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		808CBA8F1B735A3300EDFFB9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -161,6 +164,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		78F5E3F11D8ACA4800320334 /* DateUtil */ = {
+			isa = PBXGroup;
+			children = (
+				78F5E3F31D8ACA8600320334 /* CJDateUti.h */,
+				78F5E3F41D8ACA8600320334 /* CJDateUti.m */,
+			);
+			path = DateUtil;
+			sourceTree = "<group>";
+		};
 		808CBA811B735A3300EDFFB9 = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +328,7 @@
 		808CBAE81B73635C00EDFFB9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				78F5E3F11D8ACA4800320334 /* DateUtil */,
 				808CBAE91B73635C00EDFFB9 /* Coreplot */,
 			);
 			path = Utils;
@@ -643,6 +656,7 @@
 				808CBAD21B735C3D00EDFFB9 /* CustomChartViewController.m in Sources */,
 				808CBAE11B735C3D00EDFFB9 /* PNChartViewController.m in Sources */,
 				808CBB2D1B737D0C00EDFFB9 /* NSDate+Category.m in Sources */,
+				78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */,
 				7855401E1D7ADB3C008D22FD /* CJChartData.m in Sources */,
 				808CBAD71B735C3D00EDFFB9 /* WeightChartViewController.m in Sources */,
 				808CBADB1B735C3D00EDFFB9 /* CPTBarChartViewController.m in Sources */,

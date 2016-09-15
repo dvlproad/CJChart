@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,6 +12,9 @@
             <subviews>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QfH-2Q-a8G">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="bf2-d2-dpJ"/>
+                    </constraints>
                     <items>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="uM0-Rm-5gQ"/>
                         <barButtonItem title="确定" style="done" id="0Jd-do-YNW">
@@ -21,11 +24,11 @@
                         </barButtonItem>
                     </items>
                 </toolbar>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="line_gray_pickerToolbar.png" translatesAutoresizingMaskIntoConstraints="NO" id="Vmb-Up-XIc">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="line_gray_pickerToolbar.png" translatesAutoresizingMaskIntoConstraints="NO" id="Vmb-Up-XIc">
                     <rect key="frame" x="0.0" y="44" width="320" height="1"/>
                 </imageView>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="SKb-Ce-san">
-                    <rect key="frame" x="0.0" y="45" width="320" height="162"/>
+                    <rect key="frame" x="0.0" y="44" width="320" height="163"/>
                     <date key="date" timeIntervalSinceReferenceDate="438162900.29094201">
                         <!--2014-11-20 07:55:00 +0000-->
                     </date>
@@ -36,20 +39,20 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="QfH-2Q-a8G" firstAttribute="leading" secondItem="Vmb-Up-XIc" secondAttribute="leading" id="CBg-xo-jMh"/>
-                <constraint firstItem="QfH-2Q-a8G" firstAttribute="leading" secondItem="BhY-bW-0gp" secondAttribute="leading" id="VRb-qe-dOl"/>
-                <constraint firstItem="Vmb-Up-XIc" firstAttribute="top" secondItem="QfH-2Q-a8G" secondAttribute="bottom" id="Wjw-F3-vhm"/>
-                <constraint firstItem="Vmb-Up-XIc" firstAttribute="leading" secondItem="SKb-Ce-san" secondAttribute="leading" id="dsL-Nt-ky7"/>
-                <constraint firstItem="Vmb-Up-XIc" firstAttribute="trailing" secondItem="QfH-2Q-a8G" secondAttribute="trailing" id="iM7-K0-WFM"/>
-                <constraint firstAttribute="bottom" secondItem="SKb-Ce-san" secondAttribute="bottom" id="mYj-83-hu0"/>
-                <constraint firstItem="QfH-2Q-a8G" firstAttribute="top" secondItem="BhY-bW-0gp" secondAttribute="top" id="u1d-pI-fXc"/>
+                <constraint firstItem="QfH-2Q-a8G" firstAttribute="top" secondItem="BhY-bW-0gp" secondAttribute="top" id="BxU-9J-jD0"/>
+                <constraint firstAttribute="bottom" secondItem="SKb-Ce-san" secondAttribute="bottom" id="FfE-gy-xRM"/>
+                <constraint firstAttribute="trailing" secondItem="QfH-2Q-a8G" secondAttribute="trailing" id="LdC-7P-cmd"/>
+                <constraint firstItem="SKb-Ce-san" firstAttribute="top" secondItem="QfH-2Q-a8G" secondAttribute="bottom" id="Y3J-p0-lYr"/>
+                <constraint firstAttribute="trailing" secondItem="SKb-Ce-san" secondAttribute="trailing" id="g8E-mY-ssD"/>
+                <constraint firstItem="SKb-Ce-san" firstAttribute="leading" secondItem="BhY-bW-0gp" secondAttribute="leading" id="nII-kf-C9Q"/>
+                <constraint firstItem="QfH-2Q-a8G" firstAttribute="leading" secondItem="BhY-bW-0gp" secondAttribute="leading" id="tgm-MA-1Z8"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="datePicker" destination="SKb-Ce-san" id="pYI-Ue-Nf0"/>
             </connections>
-            <point key="canvasLocation" x="212" y="231"/>
+            <point key="canvasLocation" x="212" y="230.5"/>
         </view>
     </objects>
     <resources>
