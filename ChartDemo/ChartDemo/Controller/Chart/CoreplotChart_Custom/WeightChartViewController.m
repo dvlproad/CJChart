@@ -46,9 +46,9 @@ static dispatch_once_t yNegativeOnce;
 #define Line_Widht_PlotSymbol 2.0   //点的边缘线的宽度（点固定大小时候，边缘线越宽，实心点越小）
 
 
-//最大最小限定
-#define UnitCount_X_Min     7 //x轴上有多少个单位,比如1到100有100个单位，虽然有时候只显示偶数刻度
-#define UnitCount_X_Default 10 //x轴上默认只显示多少个单位，其他单位通过移动或者缩放来查看
+//x轴显示个数
+static NSInteger kXShowCountMin = 7;       //x轴上最少显示多少个单位,即放大到最大也得至少显示的个数，而更多的单位可通过移动或缩放来查看
+static NSInteger kXShowCountDefault = 10;  //x轴上初始默认显示多少个单位（不应该比kXShowCountMin小）
 
 //网格线设置
 //开头结尾多添加几条网格线
@@ -71,7 +71,21 @@ static CGFloat standValue_Y = 55.0;
 #define GraphTitle_color    [UIColor blackColor] //画布标题颜色
 #define GraphTitle_fontSize 14.0    //画布标题文字大小
         
-@interface WeightChartViewController ()
+@interface WeightChartViewController () {
+    
+}
+
+//通过绝对位置固定坐标轴时，由于是使用绝对位置，所以当视图移动的时候，坐标轴也会随着绝对位置在视图上的移动而移动
+@property (nonatomic, assign) BOOL fixedXAxisByAbsolutePosition;   /**< 通过绝对位置固定X轴 */
+@property (nonatomic, assign) BOOL fixedYAxisByAbsolutePosition;   /**< 通过绝对位置固定Y轴 */
+@property (nonatomic, assign) BOOL customXAxis; /**< 自定义X轴 */
+@property (nonatomic, assign) BOOL customYAxis; /**< 自定义Y轴 */
+
+@property (nonatomic, assign) NSInteger xShowCountDefault;  /**< 初始时候，默认显示的个数（之后随着缩放操作xShowCount会随时变化） */
+
+@property (nonatomic, strong) CPTPlotRange *globalXRange;
+@property (nonatomic, strong) CPTPlotRange *globalYRange;
+@property (nonatomic, strong) CPTPlotRange *currentXRange;//为了限制缩放的最小距离
 
 @end
 
@@ -159,6 +173,23 @@ static CGFloat standValue_Y = 55.0;
     NSLog(@"self.datas = %@", self.datas);
 }
 
+- (void)setXShowCountDefault:(NSInteger)xShowCountDefault {
+    if (xShowCountDefault < kXShowCountMin) {
+        NSLog(@"设置的显示个数%zd太小，故自动设置使用默认个数%zd", xShowCountDefault, kXShowCountMin);
+        _xShowCountDefault = kXShowCountMin;
+    } else {
+        _xShowCountDefault = xShowCountDefault;
+    }
+}
+
+//TODO: 同时自动生成set和get方法
+//- (NSInteger)xShowCountDefault {
+//    if (self.xShowCountDefault == 0) {
+//        return kXShowCountMin;
+//    }
+//    return self.xShowCountDefault;
+//}
+
 /** 更新体重的UI */
 - (void)reloadUIForWeight {
     /* 1、获取数据的开头日期和结尾日期 */
@@ -173,14 +204,17 @@ static CGFloat standValue_Y = 55.0;
     //①、判断：如果现有坐标刻度(X轴坐标)小于最小应有值，这里应默认将其扩大，以使得不会产生一个坐标里面只有一个刻度的效果
     NSInteger dayDistance = [dateEnd dayDistanceFromDate:dateBegin];
     NSLog(@"天数差为%ld", dayDistance);
-    if (dayDistance < UnitCount_X_Min) {
-        dateBegin = [dateEnd dateDistances:-UnitCount_X_Min+1 type:eDistanceDay];
+    if (dayDistance < kXShowCountMin) {
+        dateBegin = [dateEnd dateDistances:-kXShowCountMin+1 type:eDistanceDay];
     }
     
     //②、增加：开始日期提前一点，结束日期延后一点，以使得能保证所有的数据都不会显示在边界上，而造成不好的效果
     NSDate *showDateBegin = [dateBegin dateDistances:-UnitCount_Placeholder_Begin type:eDistanceDay];
     NSDate *showDateEnd = [dateEnd dateDistances:UnitCount_Placeholder_Last type:eDistanceDay];
 
+    
+    self.xShowCountDefault = kXShowCountDefault;
+    NSLog(@"最终X轴的显示个数为%ld", self.xShowCountDefault);
     
     [self reloadUIByShowDateBegin:showDateBegin showDateEnd:showDateEnd];
 }
@@ -190,22 +224,26 @@ static CGFloat standValue_Y = 55.0;
     //横轴上通过日期数据(开始日期以及结束日期)，来获取该坐标轴的最大值、最小值，以使得之后能确定坐标轴的范围。
     //纵轴上通过用户体重值数据，来获取该坐标轴的最大值、最小值，以使得之后能确定坐标轴的范围。
     //同时横轴上将日期数据Y转为XY数据，以作之后轴标签数据、纵轴上用户体重数据（也是日期Y）也改为XY形式的数据，以作之后坐标系上的店的数据
-    [self xlabel_changeDateYToXY_byXBeginDate:showDateBegin toDate:showDateEnd];
-    [self plot_changeDateYToXY_byXBeginDate:showDateBegin withDataArray:self.datas];
+    [self getXDataByShowDateBegin:showDateBegin showDateEnd:showDateEnd];
+    [self getYDataAndPlotDataFromData:self.datas byShowDateBegin:showDateBegin];
     
+    
+    self.fixedXAxisByAbsolutePosition = YES;
+    self.fixedYAxisByAbsolutePosition = YES;
+    self.customXAxis = YES;
+    self.customYAxis = YES;
     [self createCPTXYGraph];
     //    [self.graphHostingView.hostedGraph reloadData];//刷新画板
 }
 
-- (void)xlabel_changeDateYToXY_byXBeginDate:(NSDate *)startDate toDate:(NSDate *)endDate{
-    self.dataForXLable = [endDate findAllDateFromDate:startDate];
+- (void)getXDataByShowDateBegin:(NSDate *)dateBegin showDateEnd:(NSDate *)dateEnd{
+    self.xdata = [dateEnd findAllDateFromDate:dateBegin];
     self.xMin = 0;
-    self.xMax = [self.dataForXLable count] - 1;//注意这里记得减去1否则个数不正确，因为这里是从0开始算
+    self.xMax = [self.xdata count] - 1;//注意这里记得减去1否则个数不正确，因为这里是从0开始算
 }
 
-//将原本的每个日期转为对应的X，以方便显示，竖轴Y不变.
-- (void)plot_changeDateYToXY_byXBeginDate:(NSDate *)startDate withDataArray:(NSArray *)datas{
-
+//
+- (void)getYDataAndPlotDataFromData:(NSArray *)datas byShowDateBegin:(NSDate *)showDateBegin {
     NSMutableArray *dataForPlot = [[NSMutableArray alloc]init];
     
     if (datas.count == 0) {
@@ -219,7 +257,7 @@ static CGFloat standValue_Y = 55.0;
         CGFloat yMaxValue = [tmpInfo.weight floatValue];
         for (ADWInfo *info in datas) {
             NSDate *date = [info.date standDate];
-            NSInteger xValue = [date dayDistanceFromDate:startDate];
+            NSInteger xValue = [date dayDistanceFromDate:showDateBegin];
             CGFloat yValue = [info.weight floatValue];
             
             CJChartData *chartData = [[CJChartData alloc] init];
@@ -238,6 +276,51 @@ static CGFloat standValue_Y = 55.0;
     }
 }
 
+
+- (void)createCPTXYGraph {
+#pragma mark 创建基于XY轴图CPTXYGraph，并对XY轴图进行设置
+#pragma mark ———————-———————1.添加主题，标题，设置与屏幕边缘之间的空隙
+    CPTXYGraph *xyGraph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
+    
+    [self setThemeToXYGraph:xyGraph];
+    [self setTitleForXYGraph:xyGraph];           //画布Graph的标题title
+    [self setupPaddingAndBorderAndBackgroundForGraph:xyGraph];//画布Graph的内边距padding、边框border
+    
+    
+    self.lineGraph = xyGraph;
+    self.graphHostingView.hostedGraph     = xyGraph;
+    self.graphHostingView.collapsesLayers = NO; // Setting to YES reduces GPU memory usage, but can slow drawing/scrolling
+    self.graphHostingView.allowPinchScaling = YES;
+    
+    
+    
+#pragma mark ———————-———————2.设置可视空间CPTXYPlotSpace
+    CPTXYPlotSpace *xyPlotSpace = (CPTXYPlotSpace *)xyGraph.defaultPlotSpace;
+    [self setCommonSettingXYPlotSpace:xyPlotSpace];
+    [self setXYRangeAndXYGlobalRangeForXYPlotSpace:xyPlotSpace];
+    [xyPlotSpace setDelegate:self];//用来设置缩放操作.注意：这里需要等到设置完plotSpace的xyRange和globalXYRange之后，才能设置setDelegate。否则会出现坐标轴为空的原因是否是delegate方法中有部分数据需要这里的range呢？
+    
+#pragma mark ———————-———————3.设置两个轴 CPTXYAxis
+    // Axes设置x,y轴属性，如原点，量度间隔，标签，刻度，颜色等
+    CPTXYAxisSet *xyAxisSet = (CPTXYAxisSet *)xyGraph.axisSet;//获取XYGraph的轴的集合,其中包括xAxis和yAxis
+    CPTXYAxis *xAxis = xyAxisSet.xAxis;
+    CPTXYAxis *yAxis = xyAxisSet.yAxis;
+    [self setupCoordinateXAxis:xAxis];
+    [self setupCoordinateYAxis:yAxis];
+    
+    [self setTitleForXAxis:xAxis byCurrentXRange:xyPlotSpace.xRange];
+    [self setTitleForYAxis:yAxis];
+    
+    if (self.customXAxis) {
+        xAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
+    }
+    if (self.customYAxis) {
+        yAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
+    }
+    
+#pragma mark 添加曲线图CPTScatterPlot
+    [self addScatterPlotForGraph:xyGraph];
+}
 
 /** 添加画布Graph的主题Theme */
 - (void)setThemeToXYGraph:(CPTXYGraph *)xyGraph {
@@ -328,8 +411,12 @@ static CGFloat standValue_Y = 55.0;
 
 /** 设置显示和移动范围 */
 - (void)setXYRangeAndXYGlobalRangeForXYPlotSpace:(CPTXYPlotSpace *)xyPlotSpace {
-    //①、设置轴量度范围：起点, 长度
-    CGFloat showXMin = self.xMax-UnitCount_X_Default;//只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
+    //①、设置轴的显示范围
+    if (self.xShowCountDefault == 0) {
+        self.xShowCountDefault = kXShowCountMin;
+        NSLog(@"请提前设置self.xShowCountDefault");
+    }
+    CGFloat showXMin = self.xMax-self.xShowCountDefault;//只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
     CGFloat showXMax = self.xMax;
     
     CGFloat showYMin = self.yMin;
@@ -339,7 +426,7 @@ static CGFloat standValue_Y = 55.0;
     xyPlotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(showYMin) length:@(showYMax - showYMin)];
     
     
-    //②、设置轴滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
+    //②、设置轴的滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
     CGFloat globalXMin = self.xMin + 0.1;
     CGFloat globalXMax = self.xMax - 0.1;
     xyPlotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:@(globalXMin) length:@(globalXMax - globalXMin)];
@@ -350,58 +437,16 @@ static CGFloat standValue_Y = 55.0;
     //    [self.graphHostingView setAllowPinchScaling:NO];//禁止缩放：（两指捏扩动作,默认允许）
     
     //TODO
-    xPlotRange = xyPlotSpace.globalXRange;
-    yPlotRange = xyPlotSpace.yRange;
+    self.globalXRange = xyPlotSpace.globalXRange;
+    self.currentXRange = xyPlotSpace.xRange;
+    self.globalYRange = xyPlotSpace.yRange;
 }
 
 /*
-- (CPTPlotRange *)getPlotRangeWithMin:(CGFloat)min max:(CGFloat)max {
-    return [CPTPlotRange plotRangeWithLocation:@(min) length:@(max - min)];
-}
-*/
-
-- (void)createCPTXYGraph {
-#pragma mark 创建基于XY轴图CPTXYGraph，并对XY轴图进行设置
-#pragma mark ———————-———————1.添加主题，标题，设置与屏幕边缘之间的空隙
-    CPTXYGraph *xyGraph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
-    
-    [self setThemeToXYGraph:xyGraph];
-    [self setTitleForXYGraph:xyGraph];           //画布Graph的标题title
-    [self setupPaddingAndBorderAndBackgroundForGraph:xyGraph];//画布Graph的内边距padding、边框border
-    
-    
-    self.lineGraph = xyGraph;
-    self.graphHostingView.hostedGraph     = xyGraph;
-    self.graphHostingView.collapsesLayers = NO; // Setting to YES reduces GPU memory usage, but can slow drawing/scrolling
-    self.graphHostingView.allowPinchScaling = YES;
-    
-    
-    
-#pragma mark ———————-———————2.设置可视空间CPTXYPlotSpace
-    CPTXYPlotSpace *xyPlotSpace = (CPTXYPlotSpace *)xyGraph.defaultPlotSpace;
-    [self setCommonSettingXYPlotSpace:xyPlotSpace];
-    [self setXYRangeAndXYGlobalRangeForXYPlotSpace:xyPlotSpace];
-    [xyPlotSpace setDelegate:self];//用来设置缩放操作.注意：这里需要等到设置完plotSpace的xyRange和globalXYRange之后，才能设置setDelegate。否则会出现坐标轴为空的原因是否是delegate方法中有部分数据需要这里的range呢？
-    
-#pragma mark ———————-———————3.设置两个轴 CPTXYAxis
-    // Axes设置x,y轴属性，如原点，量度间隔，标签，刻度，颜色等
-    CPTXYAxisSet *xyAxisSet = (CPTXYAxisSet *)xyGraph.axisSet;//获取XYGraph的轴的集合,其中包括xAxis和yAxis
-    CPTXYAxis *xAxis = xyAxisSet.xAxis;
-    CPTXYAxis *yAxis = xyAxisSet.yAxis;
-    [self setupCoordinateXAxis:xAxis];
-    [self setupCoordinateYAxis:yAxis];
-    
-    [self setTitleForXAxis:xAxis byCurrentXRange:xyPlotSpace.xRange];
-    [self setTitleForYAxis:yAxis];
-    
-    xAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
-    yAxis.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
-    
-
-    
-#pragma mark 添加曲线图CPTScatterPlot
-    [self addScatterPlotForGraph:xyGraph];
-}
+ - (CPTPlotRange *)getPlotRangeWithMin:(CGFloat)min max:(CGFloat)max {
+ return [CPTPlotRange plotRangeWithLocation:@(min) length:@(max - min)];
+ }
+ */
 
 /** 根据当前x轴范围，设置标题及其位置（位置的计算是用来“实现固定轴标题”的目的的，轴标题的固定是需要考虑缩放等的变化的） */
 - (void)setTitleForXAxis:(CPTXYAxis *)xAxis byCurrentXRange:(CPTPlotRange *)xRange {
@@ -461,15 +506,17 @@ static CGFloat standValue_Y = 55.0;
 
 
 
-#pragma mark - 设置坐标轴
+#pragma mark - 设置坐标轴（有时候要求固定坐标轴位置，即使是在缩放的时候）
 - (void)setupCoordinateXAxis:(CPTXYAxis *)xAxis {
-#pragma mark  ①、设置X轴坐标(能实现固定坐标轴位置，即使是在缩放的时候)
-    //针对该坐标想要固定的点在该轴上的位置相对view是否始终不变(会改变的情况：比如轴原点位置改变，轴缩放）的情况可有设置orthogonalCoordinateDecimal和设置axisConstraints两种不同方法，其中设置axisConstraints是最强方法，且注意使用axisConstraints后，原本orthogonalCoordinateDecimal将会自动变成永远无效，所以使用axisConstraints的时候，可不设置orthogonalCoordinateDecimal
+    //针对该坐标想要固定的点在该轴上的位置相对view是否始终不变(会改变的情况：比如轴原点位置改变，轴缩放）的情况可有设置orthogonalPosition和设置axisConstraints两种不同方法，其中设置axisConstraints是最强方法，且注意使用axisConstraints后，原本orthogonalPosition将会自动变成永远无效，所以使用axisConstraints的时候，可不设置orthogonalPosition
     //方法：设置轴位置
-    //方法①：始终不变，则可直接使用orthogonalCoordinateDecimal“固定”（其实只是设置而已）。
+    //方法①：始终不变，则可直接使用orthogonalPosition“固定”（其实只是设置而已）。
     //方法②：会改变，则应该使用axisConstraints真正固定
-    //x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(standValue_Y);//设置x轴的原点位置
-    xAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
+    if (self.fixedXAxisByAbsolutePosition) {//通过绝对位置，设置x轴的原点位置
+        xAxis.orthogonalPosition = @(66);
+    } else {                                //通过相对位置位置，设置x轴的原点位置
+        xAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
+    }
     
     //设置轴大小：轴主刻度间距长度、轴主刻度间细分刻度个数
     xAxis.majorIntervalLength   = @(1.0);//设置x轴主刻度：每多少长度显示一个刻度
@@ -490,7 +537,7 @@ static CGFloat standValue_Y = 55.0;
     lineStyle.lineWidth         = 2.5;
     xAxis.minorTickLineStyle = lineStyle;
     
-#pragma mark  ③、设置X轴其他设置（比如：实现哪些范围不显示轴信息（轴信息包含轴刻度和轴标签））
+    //设置X轴其他设置（比如：实现哪些范围不显示轴信息（轴信息包含轴刻度和轴标签））
     /*
     NSArray *exclusionRanges_X = @[
                                    [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
@@ -507,8 +554,11 @@ static CGFloat standValue_Y = 55.0;
 }
 
 - (void)setupCoordinateYAxis:(CPTXYAxis *)yAxis {
-    //y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(2.0);
-    yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
+    if (self.fixedYAxisByAbsolutePosition) {//通过绝对位置，设置y轴的原点位置
+        yAxis.orthogonalPosition = @(self.xdata.count-10.0);
+    } else {                                //通过相对位置位置，设置y轴的原点位置
+        yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
+    }
     yAxis.majorIntervalLength         = @(5.0);
     yAxis.minorTicksPerInterval       = 4;
     yAxis.tickDirection = CPTSignPositive;
@@ -621,7 +671,7 @@ static CGFloat standValue_Y = 55.0;
     for ( NSDecimalNumber *location in locations ) {
         //NSLog(@"location = %@: %d", location, [location intValue]);
         
-        CJDate *myDate = [self.dataForXLable objectAtIndex:[location integerValue]];
+        CJDate *myDate = [self.xdata objectAtIndex:[location integerValue]];
         
         if ([location intValue]%gapNumForDay == 0) {
             //②、获取当前location上的标签文本值
@@ -668,7 +718,7 @@ static CGFloat standValue_Y = 55.0;
  */
 - (NSInteger)getGapDistanceAtLocations:(NSSet *)locations {
     NSInteger gapNum = 1;//每间隔gapNum个刻度单位再显示。
-    NSInteger maxTickShowNumber = UnitCount_X_Min; //设置坐标轴最多展示多少个刻度
+    NSInteger maxTickShowNumber = kXShowCountMin; //设置坐标轴最多展示多少个刻度
     if ([locations count] > maxTickShowNumber) { //如果locations的个数超过自己规定的个数(这里设为7个)
         gapNum = [locations count]/maxTickShowNumber;
         NSLog(@"gapNum = %zd", gapNum);
@@ -679,7 +729,7 @@ static CGFloat standValue_Y = 55.0;
 
 - (NSInteger)getGapDistanceForMonthAtLocations:(NSSet *)locations {
     NSInteger gapNum = 1;
-    NSInteger maxTickShowNumber = UnitCount_X_Min; //设置坐标轴最多展示多少个刻度
+    NSInteger maxTickShowNumber = kXShowCountMin; //设置坐标轴最多展示多少个刻度
     if ([locations count] > maxTickShowNumber) {
         gapNum = [locations count]/maxTickShowNumber; //设置"月"行最多展示
         NSLog(@"gapNum = %zd", gapNum);
@@ -838,15 +888,15 @@ static CGFloat standValue_Y = 55.0;
         //限制缩放和移动的时候。不超过原始范围
         
         
-        if ([xPlotRange containsRange:newRange]){
+        if ([self.globalXRange containsRange:newRange]){
             //如果缩放范围在 原始范围内。则返回缩放范围
             
             //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
             #pragma mark 功能：缩放时候，当放大到太大的时候，即轴上的数值点（即单位长度，而不是指显示的轴标签个数，因为很明显两个轴标签之间可能有多个数值）小于最少规定的数值点时，不让其继续缩放。（因为缩放到太大的时候，可能导致一个坐标系里都看不到一个点。）
-            if (newRange.lengthDouble <= UnitCount_X_Min) {//这里是通过newRange.length来判断。不是通过locations.length来判断。实际上两者是等价的。只不过是这里取不到locations.length而已
-                return xPlotRangeCurrent;
+            if (newRange.lengthDouble < kXShowCountMin) {//这里是通过newRange.length来判断。不是通过locations.length来判断。实际上两者是等价的。只不过是这里取不到locations.length而已
+                return self.currentXRange;
             }
-            xPlotRangeCurrent = newRange;
+            self.currentXRange = newRange;
             //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
             
             
@@ -854,23 +904,23 @@ static CGFloat standValue_Y = 55.0;
             
             return newRange;
             
-        }else if([newRange containsRange:xPlotRange]){
+        }else if([newRange containsRange:self.globalXRange]){
             //如果缩放范围在原始范围外，则返回原始范围
-            return xPlotRange;
+            return self.globalXRange;
             
         }else{
             //如果缩放和移动，导致新范围和元素范围向交叉。则要控制左边或者右边超界的情况
-            double oldXRangeMin = [xPlotRange.location doubleValue];
+            double oldXRangeMin = [self.globalXRange.location doubleValue];
             double newXRangeMin = [newRange.location doubleValue];
             
-            double oldXRangeMax = [xPlotRange.end doubleValue]; //TODO: 待验证
+            double oldXRangeMax = [self.globalXRange.end doubleValue]; //TODO: 待验证
             double newXRangeMax = [newRange.end doubleValue];
             
-            NSLog(@"willChangePlotRangeTo  newRange :%@\n xplotRange is %@",newRange,xPlotRange);
+            NSLog(@"willChangePlotRangeTo  newRange :%@\n xplotRange is %@",newRange,self.globalXRange);
             
             if (oldXRangeMin >= newXRangeMin){
                 //限制左边不超界
-                CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:xPlotRange.location length:newRange.length];
+                CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:self.globalXRange.location length:newRange.length];
                 return returnPlot;
             }
             

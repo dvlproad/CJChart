@@ -11,7 +11,7 @@
 @implementation CoreplotUtil
 
 #pragma mark - 当缩放的时候用下面的方法固定轴标题位置
-+ (NSDecimalNumber *)calculateTitleLocationByCurRange:(CPTPlotRange *)curRange{
++ (NSNumber *)calculateTitleLocationByCurRange:(CPTPlotRange *)curRange{
     //return curRange.maxLimit;
     
     //发现以下方法只使用于滑动时候，不使用于缩放时候
@@ -21,7 +21,7 @@
     double lengthDouble = curRange.lengthDouble;//如果
     double subDouble = lengthDouble * adr_titleLocation_X; //注意：不要删掉：这里使用减去10%，而不使用减去具体数字（比如double subDouble = 5.0），是为了使得不仅在滑动的时候能让轴标签固定，也能在缩放的时候使得轴标签固定。
     double dValue = curRange.maxLimitDouble + subDouble;
-    NSDecimalNumber *decimalNumber = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
+    NSNumber *decimalNumber = [NSNumber numberWithDouble:dValue];
     return decimalNumber;
     
     

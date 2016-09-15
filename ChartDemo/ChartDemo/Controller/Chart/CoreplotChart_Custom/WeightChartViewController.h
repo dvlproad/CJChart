@@ -26,9 +26,7 @@
 //    CGFloat curValue;
 //    CGFloat tarValue;
     
-    CPTPlotRange *xPlotRange;
-    CPTPlotRange *yPlotRange;
-    CPTPlotRange *xPlotRangeCurrent;//为了限制缩放的最小距离
+    
     
     BOOL shouldAddWeight;
     
@@ -37,7 +35,7 @@
 @property (nonatomic, strong) IBOutlet CPTGraphHostingView *graphHostingView;
 @property (nonatomic, readwrite, strong) CPTXYGraph *lineGraph;
 
-@property (nonatomic, readwrite, strong) NSMutableArray *dataForXLable;
+@property (nonatomic, readwrite, strong) NSMutableArray *xdata; /**< x轴(标签)数据 */
 @property (nonatomic, assign) CGFloat xMin;
 @property (nonatomic, assign) CGFloat xMax;
 
