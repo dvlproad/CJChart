@@ -46,13 +46,24 @@ typedef NSString *(^PNYLabelFormatter)(CGFloat yLabelValue);
 /** Formats the ylabel text. */
 @property (copy) PNYLabelFormatter yLabelFormatter;
 
-@property (nonatomic) CGFloat chartMargin;
+/** Prefix to y label values, none if unset. */
+@property (nonatomic) NSString *yLabelPrefix;
+
+/** Suffix to y label values, none if unset. */
+@property (nonatomic) NSString *yLabelSuffix;
+
+@property (nonatomic) CGFloat chartMarginLeft;
+@property (nonatomic) CGFloat chartMarginRight;
+@property (nonatomic) CGFloat chartMarginTop;
+@property (nonatomic) CGFloat chartMarginBottom;
 
 /** Controls whether labels should be displayed. */
 @property (nonatomic) BOOL showLabel;
 
 /** Controls whether the chart border line should be displayed. */
 @property (nonatomic) BOOL showChartBorder;
+
+@property (nonatomic) UIColor *chartBorderColor;
 
 /** Controls whether the chart Horizontal separator should be displayed. */
 @property (nonatomic, assign) BOOL showLevelLine;

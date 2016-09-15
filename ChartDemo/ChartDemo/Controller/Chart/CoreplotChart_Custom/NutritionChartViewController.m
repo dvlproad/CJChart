@@ -279,11 +279,11 @@
 #pragma mark 设置课件范围X轴:0-16; Y轴0-300
     // Add plot space for horizontal bar charts
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)newGraph.defaultPlotSpace;
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.0)
-                                                    length:CPTDecimalFromDouble(self.dataForBarBG.count)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(0.0)
+                                                    length:@(self.dataForBarBG.count)];
     CGFloat yMax = [[[self.dataForBarBG objectAtIndex:0] valueForKey:@"y"] floatValue];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.0)
-                                                    length:CPTDecimalFromDouble(yMax)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(0.0)
+                                                    length:@(yMax)];
     
 #pragma mark 设置X轴
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;
@@ -292,8 +292,8 @@
     x.majorTickLineStyle          = nil;
     x.minorTickLineStyle          = nil;
     //x.minorTicksPerInterval       = 5;
-    x.majorIntervalLength         = CPTDecimalFromDouble(1.0);
-    x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
+    x.majorIntervalLength         = @(1.0);
+    x.orthogonalPosition = @(0.0);
     
 #pragma mark 自定义轴label
     x.labelingPolicy = CPTAxisLabelingPolicyNone;
@@ -346,7 +346,7 @@
         
         CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithText:labText
                                                           textStyle:newlabelTextStyle];
-        newLabel.tickLocation = [tickLocation decimalValue];
+        newLabel.tickLocation = tickLocation;
 //        newLabel.offset       = x.labelOffset + x.majorTickLength;
         newLabel.offset       = x.labelOffset + 17;
 //        newLabel.rotation     = CPTFloat(M_PI_4);
@@ -358,7 +358,7 @@
         //newLabelValue.tickLocation = [tickLocation decimalValue];
         double dValue = tickLocation.doubleValue + 0.01; //为了不让它覆盖掉之前的lable，所以加0.1，而不是整数
         NSDecimalNumber *result = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
-        newLabelValue.tickLocation = result.decimalValue;
+        newLabelValue.tickLocation = result;
         
         //        newLabelValue.offset       = x.labelOffset + x.majorTickLength;
         newLabelValue.offset       = x.labelOffset + 2;
@@ -373,21 +373,21 @@
     y.majorTickLineStyle          = nil;
     y.minorTickLineStyle          = nil;
     y.axisLabels = nil;
-    y.majorIntervalLength         = CPTDecimalFromDouble(0.0);
-    y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
+    y.majorIntervalLength         = @(0.0);
+    y.orthogonalPosition = @(0.0);
     
     
     //CGFloat barWidthScale = 0.7;
 //    NSDecimal barWidth = [[NSDecimalNumber decimalNumberWithString:@"0.5"] decimalValue];
 //    NSDecimal barWidth = [[NSDecimalNumber numberWithFloat:0.5] decimalValue];
-    NSDecimal barWidth = CPTDecimalFromFloat(0.417f);// bar is full (50%) width
+    NSNumber *barWidth = @(0.417f);// bar is full (50%) width
     CGFloat barCornerRadius = 7.0;
 #pragma mark 背景BarChart
     CPTBarPlot *barPlot = [CPTBarPlot tubularBarPlotWithColor:[CPTColor lightGrayColor]
                                                horizontalBars:NO];
-    barPlot.baseValue  = CPTDecimalFromDouble(0.0);
+    barPlot.baseValue  = @(0.0);
     barPlot.dataSource = self;
-    barPlot.barOffset  = CPTDecimalFromFloat(0.0f);
+    barPlot.barOffset  = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     barPlot.identifier = @"Bar Plot BGBar";
@@ -414,8 +414,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     
@@ -431,8 +431,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     barPlot.identifier      = @"Bar Plot 2";
@@ -446,8 +446,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     barPlot.identifier      = @"Bar Plot 3";
@@ -463,8 +463,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     barPlot.identifier      = @"Bar Plot 4";
@@ -478,8 +478,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = barCornerRadius;
     barPlot.barBaseCornerRadius = barCornerRadius;
     barPlot.identifier      = @"Bar Plot 5";

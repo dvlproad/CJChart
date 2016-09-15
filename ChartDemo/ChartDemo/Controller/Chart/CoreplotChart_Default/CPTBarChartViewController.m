@@ -101,25 +101,25 @@
     #pragma mark 设置课件范围X轴:0-16; Y轴0-300
     // Add plot space for horizontal bar charts
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)newGraph.defaultPlotSpace;
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.0)
-                                                    length:CPTDecimalFromDouble(self.dataForBarBG.count)];//这里的长度记得设成BG的长度
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(0.0)
+                                                    length:@(self.dataForBarBG.count)];//这里的长度记得设成BG的长度
     
     CGFloat yMax = [[[self.dataForBarBG firstObject] valueForKey:@"y"] floatValue];//设置柱状图的最大值
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.0)
-                                                    length:CPTDecimalFromDouble(yMax)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(0.0)
+                                                    length:@(yMax)];
     
     #pragma mark 设置X轴
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;
     CPTXYAxis *x          = axisSet.xAxis;
-    x.axisLineStyle               = nil;
-    x.majorTickLineStyle          = nil;
-    x.minorTickLineStyle          = nil;
-    //x.minorTicksPerInterval       = 5;//设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数
-    x.majorIntervalLength         = CPTDecimalFromDouble(1.0);//x轴主刻度：每多少单位显示一个刻度
-    x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);//设置x轴的原点位置
-    x.title                       = @"X Axis";
-    x.titleLocation               = CPTDecimalFromFloat(2.5f);//x标题位于坐标多少处
-    x.titleOffset                 = 15.0;   //x标题从图表框中下移15.0的大小
+    x.axisLineStyle             = nil;
+    x.majorTickLineStyle        = nil;
+    x.minorTickLineStyle        = nil;
+    //x.minorTicksPerInterval    = 5;//设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数
+    x.majorIntervalLength       = @(1.0);//x轴主刻度：每多少单位显示一个刻度
+    x.orthogonalPosition        = @(0.0);//设置x轴的原点位置
+    x.title                     = @"X Axis";
+    x.titleLocation             = @(2.5f);//x标题位于坐标多少处
+    x.titleOffset               = 15.0;   //x标题从图表框中下移15.0的大小
 
     // Define some custom labels for the data elements
 //    x.labelRotation  = CPTFloat(M_PI_4);//轴标签的旋转角度。当x.labelingPolicy = CPTAxisLabelingPolicyNone;时，在这里设置无效，需要在其他地方设置
@@ -156,7 +156,7 @@
         
         CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithText:labText
                                                           textStyle:newlabelTextStyle];
-        newLabel.tickLocation = [tickLocation decimalValue];
+        newLabel.tickLocation = tickLocation;
 //        newLabel.offset       = x.labelOffset + x.majorTickLength;
         newLabel.offset       = x.labelOffset - 0;
 //        newLabel.rotation     = CPTFloat(M_PI_4);
@@ -166,14 +166,14 @@
     
     #pragma mark 设置Y轴
     CPTXYAxis *y = axisSet.yAxis;
-    y.axisLineStyle               = nil;
-    y.majorTickLineStyle          = nil;
-    y.minorTickLineStyle          = nil;
-    y.majorIntervalLength         = CPTDecimalFromDouble(yMax/6);//50.0f设置成0的时候，则可以不显示y轴的轴标签
-    y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(0.0);
-    y.title                       = @"Y Axis";
-    y.titleOffset                 = 45.0;
-    y.titleLocation               = CPTDecimalFromFloat(yMax/2);//150.0f
+    y.axisLineStyle         = nil;
+    y.majorTickLineStyle    = nil;
+    y.minorTickLineStyle    = nil;
+    y.majorIntervalLength   = @(yMax/6);//50.0f设置成0的时候，则可以不显示y轴的轴标签
+    y.orthogonalPosition    = @(0.0);
+    y.title                 = @"Y Axis";
+    y.titleOffset           = 45.0;
+    y.titleLocation         = @(yMax/2);//150.0f
     
 
     //因为这里的柱状图没法设置背景柱状，所以我们通过绘制一张背景的柱状图来当背景。
@@ -225,9 +225,9 @@
     
     CPTBarPlot *barPlot = [CPTBarPlot tubularBarPlotWithColor:[CPTColor cyanColor]
                                                horizontalBars:NO];
-    barPlot.baseValue  = CPTDecimalFromDouble(0.0);// 柱子的起始基线：即最下沿的 y 坐标
+    barPlot.baseValue  = @(0.0);// 柱子的起始基线：即最下沿的 y 坐标
     barPlot.dataSource = self;
-    barPlot.barOffset  = CPTDecimalFromFloat(-0.0f);//图形向左/右(正值向右)偏移：0.25(不偏移的话好像有错误)
+    barPlot.barOffset  = @(-0.0f);//图形向左/右(正值向右)偏移：0.25(不偏移的话好像有错误)
     //    barPlot.barCornerRadius = 2.0;
     barPlot.identifier = @"Bar Plot BGBar";//id，根据此id来区分不同的plot，或者为不同plot提供不同数据源
     /*
@@ -253,8 +253,8 @@
     barPlot                = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor]
                                                   horizontalBars:NO];
     barPlot.dataSource      = self;
-    barPlot.baseValue       = CPTDecimalFromDouble(0.0);
-    barPlot.barOffset       = CPTDecimalFromFloat(0.0f);
+    barPlot.baseValue       = @(0.0);
+    barPlot.barOffset       = @(0.0f);
     barPlot.barCornerRadius = 2.0;
     
     barPlot.identifier      = @"Bar Plot 1";

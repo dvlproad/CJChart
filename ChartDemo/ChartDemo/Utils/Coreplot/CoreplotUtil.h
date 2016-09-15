@@ -21,6 +21,6 @@
 
 @interface CoreplotUtil : NSObject
 
-+ (NSDecimal)calculateTitleLocationByCurRange:(CPTPlotRange *)curRange;
++ (NSDecimalNumber *)calculateTitleLocationByCurRange:(CPTPlotRange *)curRange;
 
 @end

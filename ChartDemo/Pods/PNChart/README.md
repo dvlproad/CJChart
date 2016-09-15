@@ -10,7 +10,10 @@ A simple and beautiful chart lib with **animation** used in [Piner](https://itun
 
 ## Requirements
 
-PNChart works on iOS 6.0 (Begin with 0.8.2 supports iOS 8 and Later only, if you are working with iOS 6 and iOS 7, use 0.8.1 instead.) and later version and is compatible with ARC projects. It depends on the following Apple frameworks, which should already be included with most Xcode templates:
+PNChart works on iOS 7.0+ and is compatible with ARC projects.
+If you need support for iOS 6, use PNChart <= 0.8.1. Note that 0.8.2 supports iOS 8.0+ only, 0.8.3 and newer supports iOS 7.0+.
+
+It depends on the following Apple frameworks, which should already be included with most Xcode templates:
 
 * Foundation.framework
 * UIKit.framework
@@ -64,6 +67,14 @@ data02.getData = ^(NSUInteger index) {
 
 lineChart.chartData = @[data01, data02];
 [lineChart strokeChart];
+```
+
+[![](https://www.dropbox.com/s/ra9ivyh2e0hkbqt/pnchart-linechart-smooth.png)](https://www.dropbox.com/s/ra9ivyh2e0hkbqt/pnchart-linechart-smooth.png)
+
+You can choose to show smooth lines.
+
+```objective-c
+lineChart.showSmoothLines = YES;
 ```
 
 [![](https://dl.dropboxusercontent.com/u/1599662/bar.png)](https://dl.dropboxusercontent.com/u/1599662/bar.png)
@@ -188,6 +199,16 @@ UIView *legend = [self.pieChart getLegendWithMaxWidth:200];
 [self.view addSubview:legend];
 ```
 
+#### Grid Lines
+
+Grid lines have been added to PNChart for Line Chart.
+
+```objective-c
+lineChart.showYGridLines = YES;
+lineChart.yGridLinesColor = [UIColor grayColor];
+```
+
+[![](https://www.dropbox.com/s/sxptjpwgtk32sod/pnchart-gridline.png)](https://www.dropbox.com/s/sxptjpwgtk32sod/pnchart-gridline.png)
 
 #### Update Value
 
@@ -244,6 +265,21 @@ lineChart.delegate = self;
 
 
 ```
+
+#### Animation
+
+Animation is enabled by default when drawing all charts. It can be disabled by setting `displayAnimation = NO`.
+
+```objective-c
+#import "PNChart.h"
+
+//For LineChart
+
+lineChart.displayAnimation = NO;
+
+```
+
+
 
 ```objective-c
 

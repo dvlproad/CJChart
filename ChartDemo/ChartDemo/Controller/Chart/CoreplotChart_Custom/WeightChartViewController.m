@@ -244,10 +244,7 @@ static CGFloat standValue_Y = 55.0;
 
 
 - (CPTPlotRange *)getPlotRangeBy_valueMin:(CGFloat)valueMin valueMax:(CGFloat)valueMax{
-    NSDecimal range_beg = CPTDecimalFromFloat(valueMin);
-    NSDecimal range_end = CPTDecimalFromFloat(valueMax - valueMin);
-    
-    return [CPTPlotRange plotRangeWithLocation:range_beg length:range_end];
+    return [CPTPlotRange plotRangeWithLocation:@(valueMin) length:@(valueMax - valueMin)];
 }
 
 /** 添加画布Graph的主题Theme */
@@ -412,7 +409,7 @@ static CGFloat standValue_Y = 55.0;
     yAxis.titleDirection = CPTSignNegative;
     //yAxis.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
     yAxis.titleOffset += offset_axisConstraints_Y + adn_titleOffset_Y;
-    yAxis.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
+    yAxis.titleLocation = @(self.yMax + adn_titleLocation_Y);//设置标题位置
 }
 
 
@@ -448,7 +445,7 @@ static CGFloat standValue_Y = 55.0;
     areaGradient.angle = -90.0;
     CPTFill *areaGradientFill = [CPTFill fillWithGradient:areaGradient];
     boundLinePlot.areaFill      = areaGradientFill;
-    boundLinePlot.areaBaseValue = CPTDecimalFromDouble(1.75);
+    boundLinePlot.areaBaseValue = @(1.75);
     
     
     [newGraph addPlot:boundLinePlot];
@@ -468,7 +465,7 @@ static CGFloat standValue_Y = 55.0;
     xAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
     
     //设置轴大小：轴主刻度间距长度、轴主刻度间细分刻度个数
-    xAxis.majorIntervalLength   = CPTDecimalFromDouble(1.0);//设置x轴主刻度：每多少长度显示一个刻度
+    xAxis.majorIntervalLength   = @(1.0);//设置x轴主刻度：每多少长度显示一个刻度
     xAxis.minorTicksPerInterval = 0;                        //设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数。注：如果没有细分刻度，则应该写0，而不是1
     
     //设置轴方向：坐标轴刻度方向、以及轴标签方向(CPTSignPositive正极朝向绘图区，CPTSignNegative负极朝外)
@@ -505,7 +502,7 @@ static CGFloat standValue_Y = 55.0;
 - (void)setupCoordinateYAxis:(CPTXYAxis *)yAxis {
     //y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(2.0);
     yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
-    yAxis.majorIntervalLength         = CPTDecimalFromDouble(5.0);
+    yAxis.majorIntervalLength         = @(5.0);
     yAxis.minorTicksPerInterval       = 4;
     yAxis.tickDirection = CPTSignPositive;
     yAxis.tickLabelDirection = CPTSignNegative;
@@ -513,9 +510,9 @@ static CGFloat standValue_Y = 55.0;
     
     
     NSArray *exclusionRanges_Y  = @[
-                                    [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99) length:CPTDecimalFromDouble(0.02)],
-                                    [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99) length:CPTDecimalFromDouble(0.02)],
-                                    [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99) length:CPTDecimalFromDouble(0.02)]];
+                                    [CPTPlotRange plotRangeWithLocation:@(1.99) length:@(0.02)],
+                                    [CPTPlotRange plotRangeWithLocation:@(0.99) length:@(0.02)],
+                                    [CPTPlotRange plotRangeWithLocation:@(3.99) length:@(0.02)]];
     yAxis.labelExclusionRanges = exclusionRanges_Y;
 }
 
@@ -547,8 +544,8 @@ static CGFloat standValue_Y = 55.0;
 #pragma mark 点击各个数据点响应操作(需添加CPTScatterPlotDelegate协议)
 - (void)scatterPlot:(CPTScatterPlot *)plot plotSymbolWasSelectedAtRecordIndex:(NSUInteger)idx{
     
-    NSDecimalNumber *deNumber = [NSDecimalNumber decimalNumberWithDecimal:plot.areaBaseValue];//NSDecimal转为NSDecimalNumber
-    NSLog(@"idx = %zd, %f, %f, %@, %@", idx, plot.labelOffset, [deNumber floatValue], NSStringFromCGRect(plot.contentsRect), NSStringFromCGPoint(plot.position));
+//    NSDecimalNumber *deNumber = [NSDecimalNumber decimalNumberWithDecimal:plot.areaBaseValue];//NSDecimal转为NSDecimalNumber
+//    NSLog(@"idx = %zd, %f, %f, %@, %@", idx, plot.labelOffset, [deNumber floatValue], NSStringFromCGRect(plot.contentsRect), NSStringFromCGPoint(plot.position));
     //plot.plotArea.axisSet;
     //TODO怎么获取所点击的坐标点的位置
     
@@ -720,7 +717,7 @@ static CGFloat standValue_Y = 55.0;
     
     CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
     
-    axisLabel.tickLocation = location.decimalValue;
+    axisLabel.tickLocation = location;
     axisLabel.offset       = axis.labelOffset + offset_axisConstraints_Y;
     //axisLabel.offset       = x.labelOffset + x.majorTickLength;
     //axisLabel.rotation     = CPTFloat(M_PI_4);
@@ -748,7 +745,7 @@ static CGFloat standValue_Y = 55.0;
     
     CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
     
-    axisLabel.tickLocation = location.decimalValue;
+    axisLabel.tickLocation = location;
     
     axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X;
     //axisLabel.offset       = x.labelOffset + x.majorTickLength;
@@ -786,7 +783,7 @@ static CGFloat standValue_Y = 55.0;
     //axisLabel.tickLocation = tickLocation.decimalValue;
     double dValue = location.doubleValue + 0.1; //为了不让它覆盖掉之前的lable，所以加0.1，而不是整数
     NSDecimalNumber *result = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
-    axisLabel.tickLocation = result.decimalValue;
+    axisLabel.tickLocation = result;
     
     axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X + 20;
     //axisLabel.offset       = x.labelOffset + x.majorTickLength;
@@ -856,23 +853,25 @@ static CGFloat standValue_Y = 55.0;
             
         }else{
             //如果缩放和移动，导致新范围和元素范围向交叉。则要控制左边或者右边超界的情况
-            NSDecimalNumber *myXPlotLocationNSDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:xPlotRange.location];
-            NSDecimalNumber *myXPlotLengthNSDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:xPlotRange.length];
+            double oldXRangeMin = [xPlotRange.location doubleValue];
+            double newXRangeMin = [newRange.location doubleValue];
             
-            NSDecimalNumber *myNewRangeLocationNSDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:newRange.location];
-            NSDecimalNumber *myNewRangeLengthNSDecimalNumber = [NSDecimalNumber decimalNumberWithDecimal:newRange.length];
+            double oldXRangeMax = [xPlotRange.end doubleValue]; //TODO: 待验证
+            double newXRangeMax = [newRange.end doubleValue];
+            
             NSLog(@"willChangePlotRangeTo  newRange :%@\n xplotRange is %@",newRange,xPlotRange);
             
-            if ( myXPlotLocationNSDecimalNumber.doubleValue >= myNewRangeLocationNSDecimalNumber.doubleValue){
+            if (oldXRangeMin >= newXRangeMin){
                 //限制左边不超界
                 CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:xPlotRange.location length:newRange.length];
                 return returnPlot;
             }
             
-            if ((myNewRangeLocationNSDecimalNumber.doubleValue + myNewRangeLengthNSDecimalNumber.doubleValue) > (myXPlotLengthNSDecimalNumber.doubleValue +myXPlotLocationNSDecimalNumber.doubleValue)){
-                double offset = (myNewRangeLocationNSDecimalNumber.doubleValue + myNewRangeLengthNSDecimalNumber.doubleValue) -(myXPlotLengthNSDecimalNumber.doubleValue+myXPlotLocationNSDecimalNumber.doubleValue);
+            if (newXRangeMax > oldXRangeMax){
+                double offset = newXRangeMax - oldXRangeMax;
+                
                 //限制右边不超界
-                CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:[NSDecimalNumber numberWithDouble:(myNewRangeLocationNSDecimalNumber.doubleValue - offset)].decimalValue length:newRange.length];
+                CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:[NSNumber numberWithDouble:(newXRangeMin - offset)] length:newRange.length];
                 //                CPTPlotRange * returnPlot = [[CPTPlotRange alloc ] initWithLocation:newRange.location length:xPlotRange.length];
                 NSLog(@"右边超界，超界 %f", offset);
                 NSLog(@"将要返回的 range 是：%@",returnPlot);

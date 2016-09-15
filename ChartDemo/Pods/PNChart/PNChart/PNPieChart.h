@@ -38,8 +38,31 @@
 /** Show absolute values not relative i.e. percentages */
 @property (nonatomic) BOOL showAbsoluteValues;
 
+/** Hide percentage labels less than cutoff value */
+@property (nonatomic, assign) CGFloat labelPercentageCutoff;
+
+/** Default YES. */
+@property (nonatomic) BOOL shouldHighlightSectorOnTouch;
+
+/** Current outer radius. Override recompute() to change this. **/
+@property (nonatomic) CGFloat outerCircleRadius;
+
+/** Current inner radius. Override recompute() to change this. **/
+@property (nonatomic) CGFloat innerCircleRadius;
+
 @property (nonatomic, weak) id<PNChartDelegate> delegate;
 
+/** Update chart items. Does not update chart itself. */
+- (void)updateChartData:(NSArray *)data;
+
+/** Multiple selection */
+@property (nonatomic, assign) BOOL enableMultipleSelection;
+
+/** show only tiles, not values or percentage */
+@property (nonatomic) BOOL hideValues;
+
 - (void)strokeChart;
+
+- (void)recompute;
 
 @end

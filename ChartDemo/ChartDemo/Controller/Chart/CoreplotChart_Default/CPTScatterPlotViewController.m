@@ -53,18 +53,18 @@
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)newGraph.defaultPlotSpace;
     
     //设置x轴方向的量度范围：起点1.0, 长度2个单位
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.0)
-                                                    length:CPTDecimalFromDouble(2.0)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(1.0)
+                                                    length:@(2.0)];
     
     //设置y轴方向的量度范围：起点1.0, 长度3个单位
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.0)
-                                                    length:CPTDecimalFromDouble(3.0)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(1.0)
+                                                    length:@(3.0)];
     
     //设置轴滑动范围。X轴滑动范围为从0开始后的5个单位长度，Y轴范围从1开始后的3个单位，而又Y轴初始显示区域就是从1开始并且3个单位长度，所以Y轴不能滑动，即此处只能坐标只能按照X轴横向滑动
-    plotSpace.globalXRange=[CPTPlotRange plotRangeWithLocation:CPTDecimalFromInt(0.0)
-                                                    length:CPTDecimalFromFloat(5.0)];
-    plotSpace.globalYRange=[CPTPlotRange plotRangeWithLocation:CPTDecimalFromInt(1.0)
-                                                        length:CPTDecimalFromFloat(3.0)];
+    plotSpace.globalXRange=[CPTPlotRange plotRangeWithLocation:@(0.0)
+                                                    length:@(5.0)];
+    plotSpace.globalYRange=[CPTPlotRange plotRangeWithLocation:@(1.0)
+                                                        length:@(3.0)];
     
     
     plotSpace.allowsUserInteraction = YES;  //是否允许拖动
@@ -74,27 +74,27 @@
     // Axes设置x,y轴属性，如原点，量度间隔，标签，刻度，颜色等
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;//获取XYGraph的轴的集合,其中包括xAxis和yAxis
     CPTXYAxis *x          = axisSet.xAxis;
-    x.orthogonalCoordinateDecimal = CPTDecimalFromDouble(2.0);//设置x轴的原点位置
-    x.majorIntervalLength         = CPTDecimalFromDouble(0.5);//设置x轴主刻度：每0.5显示一个刻度
+    x.orthogonalPosition = @(2.0);//设置x轴的原点位置
+    x.majorIntervalLength         = @(0.5);//设置x轴主刻度：每0.5显示一个刻度
     x.minorTicksPerInterval       = 2;//设置x轴细分刻度：每一个主刻度范围内显示细分刻度的个数,即0.5刻度之间再显示两个细刻度
-    NSArray *exclusionRanges = @[[CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99)
-                                                              length:CPTDecimalFromDouble(0.02)],
-                                 [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99)
-                                                              length:CPTDecimalFromDouble(0.02)],
-                                 [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(2.99)
-                                                              length:CPTDecimalFromDouble(0.02)]];
+    NSArray *exclusionRanges = @[[CPTPlotRange plotRangeWithLocation:@(1.99)
+                                                              length:@(0.02)],
+                                 [CPTPlotRange plotRangeWithLocation:@(0.99)
+                                                              length:@(0.02)],
+                                 [CPTPlotRange plotRangeWithLocation:@(2.99)
+                                                              length:@(0.02)]];
     x.labelExclusionRanges = exclusionRanges;//设置1.99-2.01，0.99-1.01，2.99-3.01不显示数字的主刻度，又x轴每0.5显示一个刻度，所以这里即1,2,3不显示刻度
     
     CPTXYAxis *y = axisSet.yAxis;
-    y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(2.0);
-    y.majorIntervalLength         = CPTDecimalFromDouble(0.5);
+    y.orthogonalPosition = @(2.0);
+    y.majorIntervalLength         = @(0.5);
     y.minorTicksPerInterval       = 5;
-    exclusionRanges          = @[[CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(1.99)
-                                                              length:CPTDecimalFromDouble(0.02)],
-                                 [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.99)
-                                                              length:CPTDecimalFromDouble(0.02)],
-                                 [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(3.99)
-                                                              length:CPTDecimalFromDouble(0.02)]];
+    exclusionRanges          = @[[CPTPlotRange plotRangeWithLocation:@(1.99)
+                                                              length:@(0.02)],
+                                 [CPTPlotRange plotRangeWithLocation:@(0.99)
+                                                              length:@(0.02)],
+                                 [CPTPlotRange plotRangeWithLocation:@(3.99)
+                                                              length:@(0.02)]];
     y.labelExclusionRanges = exclusionRanges;
     y.delegate             = self;//需要实现CPTAxisDelegate协议,以此来定制主刻度显示标签
     
@@ -136,7 +136,7 @@
     CPTFill *areaImageFill = [CPTFill fillWithImage:fillImage];
     boundLinePlot.areaFill      = areaImageFill;;   //设置曲线图区域的填充图片
 //    */
-    boundLinePlot.areaBaseValue = [[NSDecimalNumber numberWithFloat:1.0] decimalValue]; // 渐变色的起点位置 [[NSDecimalNumber zero] decimalValue];
+    boundLinePlot.areaBaseValue = [NSNumber numberWithFloat:1.0]; // 渐变色的起点位置
     
     
     // Add plot symbols: 曲线上的数值点的符号形状（下面用蓝色的实心原点）
@@ -171,7 +171,7 @@
     areaGradient_2.angle = -90.0;
     CPTFill *areaGradientFill_2 = [CPTFill fillWithGradient:areaGradient_2];
     dataSourceLinePlot.areaFill      = areaGradientFill_2;
-    dataSourceLinePlot.areaBaseValue = CPTDecimalFromDouble(1.75);
+    dataSourceLinePlot.areaBaseValue = @(1.75);
     
     // Animate in the new plot, as an example 淡入动画
     dataSourceLinePlot.opacity = 0.0;
@@ -207,8 +207,8 @@
     // Setup plot space
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)self.lineGraph.defaultPlotSpace;
     
-    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.0) length:CPTDecimalFromDouble(3.0 + 2.0 * arc4random() / UINT32_MAX)];
-    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.0) length:CPTDecimalFromDouble(3.0 + 2.0 * arc4random() / UINT32_MAX)];
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(0.0) length:@(3.0 + 2.0 * arc4random() / UINT32_MAX)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(0.0) length:@(3.0 + 2.0 * arc4random() / UINT32_MAX)];
 }
 
 #pragma mark -
@@ -275,7 +275,7 @@
         CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
         
         CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-        newLabel.tickLocation = tickLocation.decimalValue;
+        newLabel.tickLocation = tickLocation;
         newLabel.offset       = labelOffset;
         
         [newLabels addObject:newLabel];

@@ -18,7 +18,7 @@
 #import "ADWFMDBUtil.h"
 
 #import <CJDatePickerToolBarView.h>
-#import <UIView+CJPopupView.h>
+#import <CJPopupView/UIView+CJPopupInView.h>
 
 #import "CJChartData.h"
 

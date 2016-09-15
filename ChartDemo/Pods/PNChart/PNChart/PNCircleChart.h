@@ -13,7 +13,9 @@
 typedef NS_ENUM (NSUInteger, PNChartFormatType) {
     PNChartFormatTypePercent,
     PNChartFormatTypeDollar,
-    PNChartFormatTypeNone
+    PNChartFormatTypeNone,
+    PNChartFormatTypeDecimal,
+    PNChartFormatTypeDecimalTwoPlaces,
 };
 
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
@@ -62,11 +64,11 @@ displayCountingLabel:(BOOL)displayCountingLabel
 @property (nonatomic) NSTimeInterval duration;
 @property (nonatomic) PNChartFormatType chartType;
 
-
 @property (nonatomic) CAShapeLayer *circle;
 @property (nonatomic) CAShapeLayer *gradientMask;
 @property (nonatomic) CAShapeLayer *circleBackground;
 
 @property (nonatomic) BOOL displayCountingLabel;
+@property (nonatomic) BOOL displayAnimated;
 
 @end

@@ -45,11 +45,16 @@
 @property (nonatomic) UIColor *yLabelColor;
 @property (nonatomic) CGFloat chartCavanHeight;
 @property (nonatomic) CGFloat chartCavanWidth;
-@property (nonatomic) CGFloat chartMargin;
 @property (nonatomic) BOOL showLabel;
 @property (nonatomic) BOOL showGenYLabels;
+@property (nonatomic) BOOL showYGridLines;
+@property (nonatomic) UIColor *yGridLinesColor;
 @property (nonatomic) BOOL thousandsSeparator;
 
+@property (nonatomic) CGFloat chartMarginLeft;
+@property (nonatomic) CGFloat chartMarginRight;
+@property (nonatomic) CGFloat chartMarginTop;
+@property (nonatomic) CGFloat chartMarginBottom;
 
 /**
  * Controls whether to show the coordinate axis. Default is NO.
@@ -70,6 +75,12 @@
  * Block formatter for custom string in y-axis labels. If not set, defaults to yLabelFormat
  */
 @property (nonatomic, copy) NSString* (^yLabelBlockFormatter)(CGFloat);
+
+
+/**
+ * Controls whether to curve the line chart or not
+ */
+@property (nonatomic) BOOL showSmoothLines;
 
 - (void)setXLabels:(NSArray *)xLabels withWidth:(CGFloat)width;
 
@@ -92,4 +103,8 @@
 
 
 + (CGSize)sizeOfString:(NSString *)text withWidth:(float)width font:(UIFont *)font;
+
++ (CGPoint)midPointBetweenPoint1:(CGPoint)point1 andPoint2:(CGPoint)point2;
++ (CGPoint)controlPointBetweenPoint1:(CGPoint)point1 andPoint2:(CGPoint)point2;
+
 @end
