@@ -237,19 +237,20 @@ static CGFloat standValue_Y = 55.0;
 }
 
 - (void)getXDataByShowDateBegin:(NSDate *)dateBegin showDateEnd:(NSDate *)dateEnd{
-    self.xdata = [dateEnd findAllDateFromDate:dateBegin];
-    self.xMin = 0;
-    self.xMax = [self.xdata count] - 1;//注意这里记得减去1否则个数不正确，因为这里是从0开始算
+    self.chatDataModel = [[CJChartData alloc] init];
+    self.chatDataModel.xDatas = [dateEnd findAllDateFromDate:dateBegin];
+    self.chatDataModel.xMin = 0;
+    self.chatDataModel.xMax = [self.chatDataModel.xDatas count] - 1;//注意这里记得减去1否则个数不正确，因为这里是从0开始算
 }
 
-//
+//取出dataModels中每个dataModel的日期，结合自己设定的初始日期设置X；取出其值，设置为Y
 - (void)getYDataAndPlotDataFromData:(NSArray *)datas byShowDateBegin:(NSDate *)showDateBegin {
     NSMutableArray *dataForPlot = [[NSMutableArray alloc]init];
     
     if (datas.count == 0) {
-        self.dataForPlot = dataForPlot;
-        self.yMin = standValue_Y - 5;
-        self.yMax = standValue_Y + 6;
+        self.chatDataModel.yPlotDatas = dataForPlot;
+        self.chatDataModel.yMin = standValue_Y - 5;
+        self.chatDataModel.yMax = standValue_Y + 6;
         
     }else{
         ADWInfo *tmpInfo = datas[0];
@@ -260,19 +261,19 @@ static CGFloat standValue_Y = 55.0;
             NSInteger xValue = [date dayDistanceFromDate:showDateBegin];
             CGFloat yValue = [info.weight floatValue];
             
-            CJChartData *chartData = [[CJChartData alloc] init];
-            chartData.x = xValue;
-            chartData.y = yValue;
+            CJChartPlotData *chartPlotData = [[CJChartPlotData alloc] init];
+            chartPlotData.x = xValue;
+            chartPlotData.y = yValue;
             
             yMinValue = yValue < yMinValue ? yValue : yMinValue;
             yMaxValue = yValue > yMaxValue ? yValue : yMaxValue;
             
-            [dataForPlot addObject:chartData];
+            [dataForPlot addObject:chartPlotData];
         }
         
-        self.dataForPlot = dataForPlot;
-        self.yMin = floorf(yMinValue/5) * 5 - 5;   //floorf 向下取整
-        self.yMax = floorf(yMaxValue/5) * 5 + 6;
+        self.chatDataModel.yPlotDatas = dataForPlot;
+        self.chatDataModel.yMin = floorf(yMinValue/5) * 5 - 5;   //floorf 向下取整
+        self.chatDataModel.yMax = floorf(yMaxValue/5) * 5 + 6;
     }
 }
 
@@ -416,19 +417,19 @@ static CGFloat standValue_Y = 55.0;
         self.xShowCountDefault = kXShowCountMin;
         NSLog(@"请提前设置self.xShowCountDefault");
     }
-    CGFloat showXMin = self.xMax-self.xShowCountDefault;//只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
-    CGFloat showXMax = self.xMax;
+    CGFloat showXMin = self.chatDataModel.xMax-self.xShowCountDefault;//只显示最近的几天 所以min是 self.xMax-UnitCount_X_Default 天
+    CGFloat showXMax = self.chatDataModel.xMax;
     
-    CGFloat showYMin = self.yMin;
-    CGFloat showYMax = self.yMax-0.1;
+    CGFloat showYMin = self.chatDataModel.yMin;
+    CGFloat showYMax = self.chatDataModel.yMax-0.1;
     
     xyPlotSpace.xRange = [CPTPlotRange plotRangeWithLocation:@(showXMin) length:@(showXMax - showXMin)];
     xyPlotSpace.yRange = [CPTPlotRange plotRangeWithLocation:@(showYMin) length:@(showYMax - showYMin)];
     
     
     //②、设置轴的滑动范围。（能实现1、去掉最开头、最结尾的网格线（其实是显示不到而已），所以这里的最大值与最小值都有一个0.1的处理；2、坐标只按照X轴横向滑动，其实只是让Y轴最大滑动范围与Y轴的量度范围(初始显示区域)一样，以使得Y轴不能滑动而已）
-    CGFloat globalXMin = self.xMin + 0.1;
-    CGFloat globalXMax = self.xMax - 0.1;
+    CGFloat globalXMin = self.chatDataModel.xMin + 0.1;
+    CGFloat globalXMax = self.chatDataModel.xMax - 0.1;
     xyPlotSpace.globalXRange = [CPTPlotRange plotRangeWithLocation:@(globalXMin) length:@(globalXMax - globalXMin)];
     xyPlotSpace.globalYRange = xyPlotSpace.yRange;
     
@@ -461,7 +462,7 @@ static CGFloat standValue_Y = 55.0;
     yAxis.titleDirection = CPTSignNegative;
     //yAxis.titleLocation = CPTDecimalFromDouble(self.yMax + adn_titleLocation_Y);//设置标题位置
     yAxis.titleOffset += offset_axisConstraints_Y + adn_titleOffset_Y;
-    yAxis.titleLocation = @(self.yMax + adn_titleLocation_Y);//设置标题位置
+    yAxis.titleLocation = @(self.chatDataModel.yMax + adn_titleLocation_Y);//设置标题位置
 }
 
 
@@ -555,7 +556,7 @@ static CGFloat standValue_Y = 55.0;
 
 - (void)setupCoordinateYAxis:(CPTXYAxis *)yAxis {
     if (self.fixedYAxisByAbsolutePosition) {//通过绝对位置，设置y轴的原点位置
-        yAxis.orthogonalPosition = @(self.xdata.count-10.0);
+        yAxis.orthogonalPosition = @(self.chatDataModel.xDatas.count-10.0);
     } else {                                //通过相对位置位置，设置y轴的原点位置
         yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
     }
@@ -582,8 +583,8 @@ static CGFloat standValue_Y = 55.0;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
 #pragma mark - 给折现上的点添加值（plot添加值的折现  index点的位置 ）//参考饼状图CPTPieChartViewController的绘制
 - (CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)idx{
-    CJChartData *chartData = [self.dataForPlot objectAtIndex:idx];
-    NSString *yText = [NSString stringWithFormat:@"%.1f", chartData.y];
+    CJChartPlotData *chartPlotData = [self.chatDataModel.yPlotDatas objectAtIndex:idx];
+    NSString *yText = [NSString stringWithFormat:@"%.1f", chartPlotData.y];
     
     CPTTextLayer *label = [[CPTTextLayer alloc] initWithText:yText];
     
@@ -615,17 +616,17 @@ static CGFloat standValue_Y = 55.0;
 #pragma mark -
 #pragma mark - CPTPlotDataSource 实现数据源协议
 - (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-    return self.dataForPlot.count;
+    return self.chatDataModel.yPlotDatas.count;
 }
 
 - (id)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
-    CJChartData *chartData = [self.dataForPlot objectAtIndex:index];
+    CJChartPlotData *chartPlotData = [self.chatDataModel.yPlotDatas objectAtIndex:index];
     
     NSNumber *number = nil;
     if (fieldEnum == CPTScatterPlotFieldX) {
-        number = [NSNumber numberWithFloat:chartData.x];
+        number = [NSNumber numberWithFloat:chartPlotData.x];
     } else {
-        number = [NSNumber numberWithFloat:chartData.y];
+        number = [NSNumber numberWithFloat:chartPlotData.y];
     }
     return number;
 }
@@ -671,7 +672,7 @@ static CGFloat standValue_Y = 55.0;
     for ( NSDecimalNumber *location in locations ) {
         //NSLog(@"location = %@: %d", location, [location intValue]);
         
-        CJDate *myDate = [self.xdata objectAtIndex:[location integerValue]];
+        CJDate *myDate = [self.chatDataModel.xDatas objectAtIndex:[location integerValue]];
         
         if ([location intValue]%gapNumForDay == 0) {
             //②、获取当前location上的标签文本值

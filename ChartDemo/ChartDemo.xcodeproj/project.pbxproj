@@ -10,7 +10,8 @@
 		2EC87FFB2394D348C4B40D43 /* libPods-ChartDemoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E430859D5F0BD05E5D48D7 /* libPods-ChartDemoTests.a */; };
 		6B991AF09C4FDF754ECAE57A /* libPods-ChartDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01E12DCA3EAE10F89240AE86 /* libPods-ChartDemo.a */; };
 		78524ADF1D633BA3004C0CAA /* CJDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 78524ADE1D633BA3004C0CAA /* CJDate.m */; };
-		7855401E1D7ADB3C008D22FD /* CJChartData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7855401D1D7ADB3C008D22FD /* CJChartData.m */; };
+		7852984B1DDAAF5B007C65AA /* CJChartData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7852984A1DDAAF5B007C65AA /* CJChartData.m */; };
+		7855401E1D7ADB3C008D22FD /* CJChartPlotData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7855401D1D7ADB3C008D22FD /* CJChartPlotData.m */; };
 		78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F5E3F41D8ACA8600320334 /* CJDateUti.m */; };
 		808CBA901B735A3300EDFFB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA8F1B735A3300EDFFB9 /* main.m */; };
 		808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA921B735A3300EDFFB9 /* AppDelegate.m */; };
@@ -72,8 +73,10 @@
 		78291B49E575AC27581B77FA /* Pods-ChartDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChartDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChartDemoTests/Pods-ChartDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		78524ADD1D633BA3004C0CAA /* CJDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDate.h; sourceTree = "<group>"; };
 		78524ADE1D633BA3004C0CAA /* CJDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDate.m; sourceTree = "<group>"; };
-		7855401C1D7ADB3C008D22FD /* CJChartData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartData.h; sourceTree = "<group>"; };
-		7855401D1D7ADB3C008D22FD /* CJChartData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartData.m; sourceTree = "<group>"; };
+		785298491DDAAF5B007C65AA /* CJChartData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartData.h; sourceTree = "<group>"; };
+		7852984A1DDAAF5B007C65AA /* CJChartData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartData.m; sourceTree = "<group>"; };
+		7855401C1D7ADB3C008D22FD /* CJChartPlotData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartPlotData.h; sourceTree = "<group>"; };
+		7855401D1D7ADB3C008D22FD /* CJChartPlotData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartPlotData.m; sourceTree = "<group>"; };
 		78F5E3F31D8ACA8600320334 /* CJDateUti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDateUti.h; sourceTree = "<group>"; };
 		78F5E3F41D8ACA8600320334 /* CJDateUti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDateUti.m; sourceTree = "<group>"; };
 		808CBA8A1B735A3300EDFFB9 /* ChartDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -268,8 +271,10 @@
 				808CBAB91B735C3D00EDFFB9 /* NutritionChartViewController.h */,
 				808CBABA1B735C3D00EDFFB9 /* NutritionChartViewController.m */,
 				808CBABB1B735C3D00EDFFB9 /* NutritionChartViewController.xib */,
-				7855401C1D7ADB3C008D22FD /* CJChartData.h */,
-				7855401D1D7ADB3C008D22FD /* CJChartData.m */,
+				7855401C1D7ADB3C008D22FD /* CJChartPlotData.h */,
+				7855401D1D7ADB3C008D22FD /* CJChartPlotData.m */,
+				785298491DDAAF5B007C65AA /* CJChartData.h */,
+				7852984A1DDAAF5B007C65AA /* CJChartData.m */,
 				808CBABE1B735C3D00EDFFB9 /* WeightChartViewController.h */,
 				808CBABF1B735C3D00EDFFB9 /* WeightChartViewController.m */,
 				808CBABC1B735C3D00EDFFB9 /* WeightChartViewController+Event.h */,
@@ -651,13 +656,14 @@
 				808CBB311B737D7700EDFFB9 /* NSString+Category.m in Sources */,
 				808CBAD91B735C3D00EDFFB9 /* CoreplotChartViewController.m in Sources */,
 				808CBADD1B735C3D00EDFFB9 /* CPTPieChartViewController.m in Sources */,
+				7852984B1DDAAF5B007C65AA /* CJChartData.m in Sources */,
 				808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */,
 				808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */,
 				808CBAD21B735C3D00EDFFB9 /* CustomChartViewController.m in Sources */,
 				808CBAE11B735C3D00EDFFB9 /* PNChartViewController.m in Sources */,
 				808CBB2D1B737D0C00EDFFB9 /* NSDate+Category.m in Sources */,
 				78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */,
-				7855401E1D7ADB3C008D22FD /* CJChartData.m in Sources */,
+				7855401E1D7ADB3C008D22FD /* CJChartPlotData.m in Sources */,
 				808CBAD71B735C3D00EDFFB9 /* WeightChartViewController.m in Sources */,
 				808CBADB1B735C3D00EDFFB9 /* CPTBarChartViewController.m in Sources */,
 				808CBB201B73796600EDFFB9 /* ADWFMDBUtil.m in Sources */,

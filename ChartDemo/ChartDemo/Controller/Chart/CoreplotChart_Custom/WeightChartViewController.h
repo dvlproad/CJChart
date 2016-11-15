@@ -35,13 +35,7 @@
 @property (nonatomic, strong) IBOutlet CPTGraphHostingView *graphHostingView;
 @property (nonatomic, readwrite, strong) CPTXYGraph *lineGraph;
 
-@property (nonatomic, readwrite, strong) NSMutableArray *xdata; /**< x轴(标签)数据 */
-@property (nonatomic, assign) CGFloat xMin;
-@property (nonatomic, assign) CGFloat xMax;
-
-@property (nonatomic, readwrite, strong) NSMutableArray *dataForPlot;
-@property (nonatomic, assign) CGFloat yMin;
-@property (nonatomic, assign) CGFloat yMax;
+@property (nonatomic, readwrite, strong) CJChartData *chatDataModel; /**< x轴数据 */
 
 @property(nonatomic, strong) NSString *uid;
 @property(nonatomic, strong) NSMutableArray *datas;
