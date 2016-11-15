@@ -90,7 +90,7 @@
             }
         }
     }
-    NSLog(@"现在总共有%zd天", dayIndex);
+    NSLog(@"最终加上占位的天数后总共有%zd天", dayIndex);
     
     return dateArray;
 }

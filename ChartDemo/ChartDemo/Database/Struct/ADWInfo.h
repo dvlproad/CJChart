@@ -16,7 +16,9 @@
 #define kADWKeyModified @"modified"
 #define kADWKeyExecType @"is_delete"
 
-@interface ADWInfo : NSObject
+#import "CJChartPlotData.h"
+
+@interface ADWInfo : CJChartPlotData
 
 @property(nonatomic, strong) NSString *uid;
 @property(nonatomic, strong) NSString *date;

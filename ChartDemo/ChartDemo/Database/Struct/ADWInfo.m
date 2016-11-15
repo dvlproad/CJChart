@@ -11,14 +11,24 @@
 
 @implementation ADWInfo
 
+- (instancetype)initWithXDateString:(NSString *)xDateString yValueString:(NSString *)yValueString {
+    self = [super initWithXDateString:xDateString yValueString:yValueString];
+    if (self) {
+        _date = xDateString;
+        _weight = yValueString;
+    }
+    return self;
+}
+
 
 //从服务器返回的标准dic结构，转为自定义的结构体
 + (ADWInfo *)turnToStructFromStandardDic:(NSDictionary *)dic{
-    ADWInfo *info = [[ADWInfo alloc]init];
+    NSString *xDateString = [[dic valueForKeyPath:kADWKeyDate] substringToIndex:10];
+    NSString *yValueString = [[dic valueForKey:kADWKeyWeight] stringValue];
+    
+    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:xDateString yValueString:yValueString];
     info.uid = [[dic valueForKey:kADWKeyUID] stringValue];
-    info.date = [[dic valueForKeyPath:kADWKeyDate] substringToIndex:10];
     info.wid = [[dic valueForKey:kADWKeyWID] stringValue];
-    info.weight = [[dic valueForKey:kADWKeyWeight] stringValue];
     info.modified = [[dic valueForKeyPath:kADWKeyModified] stringValue];
     
     BOOL is_delete = [[dic valueForKey:kADWKeyExecType] boolValue];

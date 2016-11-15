@@ -86,11 +86,12 @@
 
 
 + (ADWInfo *)transformToInfoByDic:(NSDictionary *)dic{
-    ADWInfo *info = [[ADWInfo alloc]init];
+    NSString *xDateString = [dic valueForKey:kADWKeyDate];
+    NSString *yValueString = [dic valueForKey:kADWKeyWeight];
+    
+    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:xDateString yValueString:yValueString];
     info.uid = dic[kADWKeyUID];
-    info.date = dic[kADWKeyDate];
     info.wid = dic[kADWKeyWID];
-    info.weight = dic[kADWKeyWeight];
     info.modified = dic[kADWKeyModified];
     info.execTypeL = dic[kADWKeyExecType];
     info.execTypeN = @"none";
