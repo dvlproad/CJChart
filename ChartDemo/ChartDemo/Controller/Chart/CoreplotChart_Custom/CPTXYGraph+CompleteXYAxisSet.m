@@ -8,6 +8,10 @@
 
 #import "CPTXYGraph+CompleteXYAxisSet.h"
 
+//坐标轴与边界距离(待完善)
+#define kConstraintWithLowerOffsetX 60 //设置所固定的Y坐标轴与最小值的偏移
+#define kConstraintWithLowerOffsetY 0 //设置所固定的Y坐标轴与最小值的偏移(一般设为0)
+
 //在默认的距离上再偏移多少 adn: after_default_num   adr: after_default__ratio
 #define adn_titleLocation_Y -5.0    //标题刻度位置在默认的基础上再偏移多少值
 #define adn_titleOffset_Y   -5.0    //标题像素位置...
@@ -26,7 +30,10 @@
     if (fixedXAxisByAbsolutePosition) {//通过绝对位置，设置x轴的原点位置
         xAxis.orthogonalPosition = @(66);
     } else {                                //通过相对位置位置，设置x轴的原点位置
-        xAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_X];
+        xAxis.axisConstraints =
+        [CPTConstraints constraintWithLowerOffset:kConstraintWithLowerOffsetX];
+        //[CPTConstraints constraintWithUpperOffset:60];
+        //[CPTConstraints constraintWithRelativeOffset:0.5];
     }
     
     //设置轴大小：轴主刻度间距长度、轴主刻度间细分刻度个数
@@ -42,7 +49,7 @@
     lineStyle.miterLimit        = 1.0;
     lineStyle.lineColor         = [CPTColor blueColor];  //线条颜色
     
-    lineStyle.lineWidth         = 10.0;  //线条宽度
+    lineStyle.lineWidth         = 1.0;  //线条宽度
     xAxis.majorTickLineStyle = lineStyle;
     
     lineStyle.lineWidth         = 2.5;
@@ -68,7 +75,7 @@
         NSInteger xLength = [xRange.length integerValue];//self.chartDataModel.xMax
         yAxis.orthogonalPosition = @(xLength-10.0);
     } else {                                //通过相对位置位置，设置y轴的原点位置
-        yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:offset_axisConstraints_Y];
+        yAxis.axisConstraints = [CPTConstraints constraintWithLowerOffset:kConstraintWithLowerOffsetY];
     }
     yAxis.majorIntervalLength         = @(5.0);
     yAxis.minorTicksPerInterval       = 4;
@@ -97,7 +104,7 @@
     
     xAxis.title = title;
     xAxis.titleDirection = CPTSignNegative;
-    xAxis.titleOffset += offset_axisConstraints_X + adn_titleOffset_X;
+    xAxis.titleOffset += -kConstraintWithLowerOffsetX;  //x轴标题偏移量(实际中，我们常常需要将标题设置在轴附近)
     xAxis.titleLocation = xTitleLocation;
 }
 
@@ -112,7 +119,7 @@
     
     yAxis.title = title;
     yAxis.titleDirection = CPTSignNegative;
-    yAxis.titleOffset += offset_axisConstraints_Y + adn_titleOffset_Y;
+    yAxis.titleOffset += -10;    //放大或缩小y轴默认标题与y坐标轴的距离,值越大距离越大
     yAxis.titleLocation = yTitleLocation;//设置标题位置
 }
 

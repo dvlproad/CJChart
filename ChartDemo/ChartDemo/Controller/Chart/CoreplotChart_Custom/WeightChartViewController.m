@@ -8,22 +8,18 @@
 
 #import "WeightChartViewController.h"
 
-#import "CPTXYGraph+CompleteTitleForWeightChart.h"
-#import "CPTXYGraph+CompletePaddingAndBorderForWeightChart.h"
-
+#import "CPTXYGraph+CompleteXYGraph.h"
 #import "CPTXYGraph+CompleteXYPlotSpace.h"
 #import "CPTXYGraph+CompleteXYAxisSet.h"
+
+#import "CPTScatterPlot+Complete.h"
+
+#import "CPTAxis+Complete.h"
 
 #import "QCPTTheme.h"
 #import "CJChartAxisSetting.h"
 
-static CPTTextStyle *yPositiveStyle = nil;
-static CPTTextStyle *yNegativeStyle = nil;
-static dispatch_once_t yPositiveOnce;
-static dispatch_once_t yNegativeOnce;
-
-
-static CGFloat standValue_Y = 55.0;
+#import "CJChartPlotDataSource.h"
 
 
 //边框属性
@@ -31,37 +27,17 @@ static CGFloat standValue_Y = 55.0;
 #define border_Width_plotArea   4.0
 #define border_Color_plotArea   [UIColor redColor].CGColor
 
-
-//曲线上线的属性
-#define Line_Color_ScatterPlot          [CPTColor greenColor]
-#define Line_Width_ScatterPlot          1.0
-#define Line_dashPattern_ScatterPlot    @[@5.0, @5.0]
-
-
-//圆点上圆点的属性
-#define PlotSymbol_Style    [CPTPlotSymbol ellipsePlotSymbol] //符号形状类型：实心原点
-#define PlotSymbol_Color    [CPTColor greenColor] //点的填充色
-#define PlotSymbol_Size     CGSizeMake(6.0, 6.0)  //点的大小
-
-//原点上线的属性
-#define Line_Style_PlotSymbol [CPTMutableLineStyle lineStyle] //点的边缘线类型
-#define Line_Color_PlotSymbol [CPTColor whiteColor] //点的边缘线的颜色
-#define Line_Widht_PlotSymbol 2.0   //点的边缘线的宽度（点固定大小时候，边缘线越宽，实心点越小）
-
 //网格线设置
 //去掉最开头、最结尾的网格线，其实是显示不到而已
 #define globalXRange_NoShowAtBeginAndLast   0.1
 #define globalYRange_NoShowAtBeginAndLast   0.1
 
-#define Text_Color_isGreaterThanOrEqualTo_Y [CPTColor blackColor]   //y轴轴标签值大于指定值时候的文字颜色
-#define Text_Color_isLessThan_Y             [CPTColor blackColor]     //y轴轴标签值小于指定值时候的文字颜色
-
-#define Text_Color_Default_X                [CPTColor blackColor]     //x轴轴标签默认的文字牙呢
-
         
 @interface WeightChartViewController () {
     
 }
+@property (nonatomic, strong) CJChartPlotDataSource *chartPlotDataSource;
+
 @property (nonatomic, strong) CJChartAxisSetting *chartAxisSetting;
 @property (nonatomic, assign) BOOL customXAxis; /**< 自定义X轴 */
 @property (nonatomic, assign) BOOL customYAxis; /**< 自定义Y轴 */
@@ -119,19 +95,19 @@ static CGFloat standValue_Y = 55.0;
 #endif
     
     
-    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:@"2016-08-29" yValueString:@"72"];
+    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:@"2016-10-29" yValueString:@"72"];
     info.uid = self.uid;
     info.wid = @"10001";
     info.modified = @"1013513515";
     [ADWFMDBUtil insertInfo:info];
     
-    ADWInfo *info2 = [[ADWInfo alloc] initWithXDateString:@"2016-09-04" yValueString:@"70"];
+    ADWInfo *info2 = [[ADWInfo alloc] initWithXDateString:@"2016-11-04" yValueString:@"70"];
     info2.uid = self.uid;
     info2.wid = @"10002";
     info2.modified = @"1013513516";
     [ADWFMDBUtil insertInfo:info2];
     
-    ADWInfo *info3 = [[ADWInfo alloc] initWithXDateString:@"2016-09-09" yValueString:@"65"];
+    ADWInfo *info3 = [[ADWInfo alloc] initWithXDateString:@"2016-11-09" yValueString:@"65"];
     info3.uid = self.uid;
     info3.wid = @"10003";
     info3.modified = @"1013513517";
@@ -162,8 +138,8 @@ static CGFloat standValue_Y = 55.0;
     
     
     self.chartAxisSetting = [[CJChartAxisSetting alloc] init];
-    self.chartAxisSetting.fixedXAxisByAbsolutePosition = YES;
-    self.chartAxisSetting.fixedYAxisByAbsolutePosition = YES;
+//    self.chartAxisSetting.fixedXAxisByAbsolutePosition = YES;
+//    self.chartAxisSetting.fixedYAxisByAbsolutePosition = YES;
     
     [self reloadChartUI];
 }
@@ -220,7 +196,7 @@ static CGFloat standValue_Y = 55.0;
     
     xAxis.plotArea.borderWidth = border_Width_plotArea;
     xAxis.plotArea.borderColor = border_Color_plotArea;
-    yAxis.plotArea.borderWidth = 3;
+    yAxis.plotArea.borderWidth = 1;
     yAxis.plotArea.borderColor = [UIColor greenColor].CGColor;
 
     
@@ -249,40 +225,15 @@ static CGFloat standValue_Y = 55.0;
 
 //添加曲线图CPTScatterPlot
 - (void)addScatterPlotForGraph:(CPTXYGraph *)newGraph{
-    CPTScatterPlot *boundLinePlot  = [[CPTScatterPlot alloc] init];
-    boundLinePlot.identifier    = @"Blue Plot"; //曲线图的标识（注意：一个图中可以有多个曲线图，每个曲线图通过其 identifier 进行唯一标识。）
-    boundLinePlot.dataSource    = self;         //曲线图的数据源
-    boundLinePlot.delegate = self;  //曲线图的委托，比如实现各个数据点响应操作的CPTScatterPlotDelegate委托
+    CPTScatterPlot *scatterPlot  = [[CPTScatterPlot alloc] init];
+    [scatterPlot completeScatterPlot:@"Blue Plot"];
     
-    //①、设置曲线图中的曲线（线条颜色、宽度、如果是破折线，还要设置破折线样式dashPattern）
-    CPTMutableLineStyle *lineStyle = [CPTMutableLineStyle lineStyle];//创建了一个可编辑的线条风格
-    lineStyle.lineColor = Line_Color_ScatterPlot;
-    lineStyle.lineWidth = Line_Width_ScatterPlot;
-    lineStyle.dashPattern = Line_dashPattern_ScatterPlot;//破折号dash样式
-    boundLinePlot.dataLineStyle = lineStyle;    //曲线图的曲线属性
+    self.chartPlotDataSource = [[CJChartPlotDataSource alloc] initWithChartData:self.chartDataModel];
+    scatterPlot.dataSource = self.chartPlotDataSource; //曲线图的数据源
     
-    //②、设置曲线图中曲线上的的数值点的符号（形状、大小、颜色）Add plot symbols:
-    CPTPlotSymbol *plotSymbol = PlotSymbol_Style;//设为圆点
-    plotSymbol.fill          = [CPTFill fillWithColor:PlotSymbol_Color];
-    //设置点的边缘线的颜色以及宽度
-    CPTMutableLineStyle *symbolLineStyle = Line_Style_PlotSymbol;
-    symbolLineStyle.lineColor = Line_Color_PlotSymbol;
-    symbolLineStyle.lineWidth = Line_Widht_PlotSymbol;
-    plotSymbol.lineStyle     = symbolLineStyle; //圆点的边缘线
-    plotSymbol.size          = PlotSymbol_Size;
-    boundLinePlot.plotSymbol = plotSymbol;  //设置曲线上的数值点的符号形状
+    scatterPlot.delegate = self;  //曲线图的委托，比如实现各个数据点响应操作的CPTScatterPlotDelegate委托
     
-    
-    //③、设置曲线图中曲线覆盖区域areaFill的填充（填充色、填充其实位置）
-    CPTColor *areaColor       = [CPTColor colorWithComponentRed:CPTFloat(0.3) green:CPTFloat(1.0) blue:CPTFloat(0.3) alpha:CPTFloat(0.8)];
-    CPTGradient *areaGradient = [CPTGradient gradientWithBeginningColor:areaColor endingColor:[CPTColor clearColor]];
-    areaGradient.angle = -90.0;
-    CPTFill *areaGradientFill = [CPTFill fillWithGradient:areaGradient];
-    boundLinePlot.areaFill      = areaGradientFill;
-    boundLinePlot.areaBaseValue = @(1.75);
-    
-    
-    [newGraph addPlot:boundLinePlot];
+    [newGraph addPlot:scatterPlot];
 }
 
 
@@ -295,25 +246,9 @@ static CGFloat standValue_Y = 55.0;
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-#pragma mark - 给折现上的点添加值（plot添加值的折现  index点的位置 ）//参考饼状图CPTPieChartViewController的绘制
-- (CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)idx{
-    CJChartPlotData *chartPlotData = [self.chartDataModel.yPlotDatas objectAtIndex:idx];
-    NSString *yText = [NSString stringWithFormat:@"%.1f", chartPlotData.y];
-    
-    CPTTextLayer *label = [[CPTTextLayer alloc] initWithText:yText];
-    
-    CPTMutableTextStyle *textStyle = [label.textStyle mutableCopy];
-    
-    textStyle.color = [CPTColor greenColor];
-    textStyle.fontSize = 10.0f;
-    label.textStyle = textStyle;
-    
-    
-    return label;
-}
- 
- 
-#pragma mark 点击各个数据点响应操作(需添加CPTScatterPlotDelegate协议)
+
+#pragma mark - CPTScatterPlotDelegate
+/** 点击各个数据点响应操作 */
 - (void)scatterPlot:(CPTScatterPlot *)plot plotSymbolWasSelectedAtRecordIndex:(NSUInteger)idx{
     
 //    NSDecimalNumber *deNumber = [NSDecimalNumber decimalNumberWithDecimal:plot.areaBaseValue];//NSDecimal转为NSDecimalNumber
@@ -328,245 +263,29 @@ static CGFloat standValue_Y = 55.0;
 
 
 #pragma mark -
-#pragma mark - CPTPlotDataSource 实现数据源协议
-- (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-    return self.chartDataModel.yPlotDatas.count;
-}
-
-- (id)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
-    CJChartPlotData *chartPlotData = [self.chartDataModel.yPlotDatas objectAtIndex:index];
-    
-    NSNumber *number = nil;
-    if (fieldEnum == CPTScatterPlotFieldX) {
-        number = [NSNumber numberWithFloat:chartPlotData.x];
-    } else {
-        number = [NSNumber numberWithFloat:chartPlotData.y];
-    }
-    return number;
-}
 
 #pragma mark - CPTAxisDelegate (X轴、Y轴标签设置)
 - (BOOL)axis:(CPTAxis *)axis shouldUpdateAxisLabelsAtLocations:(NSSet *)locations
 {
     //NSLog(@"dataForXLable->%d ?=? %d<-locationsCount", self.dataForXLable.count, locations.count);
     //注locations只代表主刻度上的那些location
-    
-    /* Y轴标签设置 */
-    if (axis.coordinate == CPTCoordinateY) {
-        //CGFloat labelOffset    = axis.labelOffset;
-        NSNumber *n_standValue_Y  = [NSNumber numberWithFloat:standValue_Y];
-        
-        NSMutableSet *axisLabelsY = [NSMutableSet set];
-        for ( NSDecimalNumber *location in locations ) {
-            CPTAxisLabel *axisLabel = [self yAxis:axis axisLabelAtLocation:location withBaseValue:n_standValue_Y];
-            [axisLabelsY addObject:axisLabel];
-        }
-        axis.axisLabels = axisLabelsY;
+    if (axis.coordinate == CPTCoordinateY) {    //Y轴标签设置
+        [axis completeCoordinateYLocations:locations];
         
         return NO;
+        
+    } else  {   //X轴标签设置
+        [axis completeCoordinateXLocations:locations withChartData:self.chartDataModel];
+        return NO;//因为在这里我们自己设置了轴标签的描绘，所以这个方法返回 NO 告诉系统不需要使用系统的标签描绘设置了。
     }
-    
-    
-    /* X轴标签设置 */
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-#pragma mark 功能：实现缩放时候，轴标签能根据轴上的点的个数自适应，以使得不会出现轴标签密密麻麻的排在一起的情况
-    NSInteger gapNumForDay = [self getGapDistanceAtLocations:locations];
-    NSInteger gapNumForMonth = [self getGapDistanceForMonthAtLocations:locations];
-    
-    /*//TODO怎么动态修改x轴主刻度的间距(附：以下注释的代码无效)
-     //额外增加的代码，一般只在规定时候设置
-     NSInteger gapXScaleMajor = 1.0;//x轴主刻度的间距.注意刻度数变化的时候，势必会影响到轴上显示的刻度个数，即location的个数。
-     if ([locations count] > 28) {
-     gapXScaleMajor = locations.count/28;
-     }
-     axis.majorIntervalLength = CPTDecimalFromDouble(gapXScaleMajor);//设置x轴主刻度
-     */
-    
-    NSMutableSet *axisLabelsX = [NSMutableSet set];
-    for ( NSDecimalNumber *location in locations ) {
-        //NSLog(@"location = %@: %d", location, [location intValue]);
-        
-        CJDate *myDate = [self.chartDataModel.xDatas objectAtIndex:[location integerValue]];
-        
-        if ([location intValue]%gapNumForDay == 0) {
-            //②、获取当前location上的标签文本值
-            //NSFormatter *formatter = axis.labelFormatter;
-            //NSString *axisLabelText = [formatter stringForObjectValue:location];
-            
-            NSString *axisLabelTextDay = @"kong";
-            
-            
-            if (myDate.isFirstDayInMonth) {
-                axisLabelTextDay = [NSString stringWithFormat:@"%zd.%02zd", myDate.month, myDate.day];
-            }else{
-                axisLabelTextDay = [NSString stringWithFormat:@"%zd", myDate.day];
-            }
-            
-            CPTAxisLabel *axisLabel = [self xAxisDay:axis axisLabelAtLocation:location withText:axisLabelTextDay];
-            [axisLabelsX addObject:axisLabel];
-        }
-        
-        
-        if ([location intValue]%gapNumForMonth == 0) {
-            //获取当前location上的标签文本值
-            NSString *axisLabelTextMonth = @"kong";
-        
-            if (myDate.isMiddleDayInMonth) {
-                axisLabelTextMonth = [NSString stringWithFormat:@"%zd月", myDate.month];
-                
-                CPTAxisLabel *axisLabel = [self xAxisMonth:axis axisLabelAtLocation:location withText:axisLabelTextMonth];
-                [axisLabelsX addObject:axisLabel];
-            }
-        }
-    }
-    
-    axis.axisLabels = axisLabelsX;
-    
-    return NO;//因为在这里我们自己设置了轴标签的描绘，所以这个方法返回 NO 告诉系统不需要使用系统的标签描绘设置了。
-}
-
-
-/**
- *  计算最后绘制出来的轴刻度要以每隔多少间隔才绘制一个（以防当轴上的点过多时，如果全绘制会导致轴刻度密密麻麻的）
- *
- *  @return 相邻刻度的间隔（计算方法为：通过设置最大允许多少刻度来计算）
- */
-- (NSInteger)getGapDistanceAtLocations:(NSSet *)locations {
-    NSInteger gapNum = 1;//每间隔gapNum个刻度单位再显示。
-    NSInteger maxTickShowNumber = self.chartDataModel.xShowCountLeast; //设置坐标轴最多展示多少个刻度
-    if ([locations count] > maxTickShowNumber) { //如果locations的个数超过自己规定的个数(这里设为7个)
-        gapNum = [locations count]/maxTickShowNumber;
-        NSLog(@"gapNum = %zd", gapNum);
-    }
-    return gapNum;
-}
-
-
-- (NSInteger)getGapDistanceForMonthAtLocations:(NSSet *)locations {
-    NSInteger gapNum = 1;
-    NSInteger maxTickShowNumber = self.chartDataModel.xShowCountLeast; //设置坐标轴最多展示多少个刻度
-    if ([locations count] > maxTickShowNumber) {
-        gapNum = [locations count]/maxTickShowNumber; //设置"月"行最多展示
-        NSLog(@"gapNum = %zd", gapNum);
-    }
-    return gapNum;
-}
-
-- (CPTAxisLabel *)yAxis:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withBaseValue:(NSNumber *)n_standValue_Y {
-    //NSLog(@"location = %@: %d", location, [location intValue]);
-    
-    
-    //①、获取标签样式
-    CPTTextStyle *theLabelTextStyle = [axis.labelTextStyle mutableCopy];
-    
-    
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
-#pragma mark 功能：对轴上不同的点设置不同的刻度标签颜色，如与standValue为标准，大于等于用一种，小于用另外一种
-    if ( [location isGreaterThanOrEqualTo:n_standValue_Y] ) {
-        dispatch_once(&yPositiveOnce, ^{
-            CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-            newStyle.color = Text_Color_isGreaterThanOrEqualTo_Y;
-            yPositiveStyle = newStyle;
-        });
-        
-        theLabelTextStyle = yPositiveStyle;
-    }
-    else {
-        dispatch_once(&yNegativeOnce, ^{
-            CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-            newStyle.color = Text_Color_isLessThan_Y;
-            yNegativeStyle = newStyle;
-        });
-        
-        theLabelTextStyle = yNegativeStyle;
-    }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//
-    
-    
-    //②、获取标签文本
-    NSString *labelString       = [NSString stringWithFormat:@"%d", [location intValue]];
-    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] initWithText:labelString style:theLabelTextStyle];
-    
-    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-    
-    axisLabel.tickLocation = location;
-    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_Y;
-    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
-    //axisLabel.rotation     = CPTFloat(M_PI_4);
-    
-    return axisLabel;
-}
-
-
-- (CPTAxisLabel *)xAxisDay:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withText:(NSString *)text {
-    //①、获取标签样式
-    static CPTTextStyle *positiveStyle = nil;
-    static dispatch_once_t positiveOnce;
-    
-    CPTTextStyle *theLabelTextStyle;
-    dispatch_once(&positiveOnce, ^{
-        CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-        newStyle.color = Text_Color_Default_X;
-        positiveStyle = newStyle;
-    });
-    theLabelTextStyle = positiveStyle;
-    
-    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] init];
-    [newLabelLayer setText:text];
-    [newLabelLayer setTextStyle:theLabelTextStyle];
-    
-    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-    
-    axisLabel.tickLocation = location;
-    
-    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X;
-    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
-    axisLabel.rotation     = CPTFloat(M_PI_2);
-    
-    return axisLabel;
-}
-
-/**
- *  绘制X轴上的location位置的月刻度
- *
- *  @param axis     坐标轴
- *  @param location 坐标轴上的位置
- *  @param text     坐标轴上的文本
- *
- *  @return 坐标刻度
- */
-- (CPTAxisLabel *)xAxisMonth:(CPTAxis *)axis axisLabelAtLocation:(NSDecimalNumber *)location withText:(NSString *)text {
-    CPTTextStyle *theLabelTextStyle;
-    static CPTTextStyle *positiveStyle = nil;
-    static dispatch_once_t positiveOnce;
-    dispatch_once(&positiveOnce, ^{
-        CPTMutableTextStyle *newStyle = [axis.labelTextStyle mutableCopy];
-        newStyle.color = [CPTColor redColor];
-        positiveStyle = newStyle;
-    });
-    theLabelTextStyle = positiveStyle;
-    
-    
-    CPTTextLayer *newLabelLayer = [[CPTTextLayer alloc] init];
-    [newLabelLayer setText:text];
-    [newLabelLayer setTextStyle:theLabelTextStyle];
-    
-    CPTAxisLabel *axisLabel = [[CPTAxisLabel alloc] initWithContentLayer:newLabelLayer];
-    //axisLabel.tickLocation = tickLocation.decimalValue;
-    double dValue = location.doubleValue + 0.1; //为了不让它覆盖掉之前的lable，所以加0.1，而不是整数
-    NSDecimalNumber *result = (NSDecimalNumber *)[NSDecimalNumber numberWithDouble:dValue];
-    axisLabel.tickLocation = result;
-    
-    axisLabel.offset       = axis.labelOffset + offset_axisConstraints_X + 20;
-    //axisLabel.offset       = x.labelOffset + x.majorTickLength;
-    //axisLabel.rotation     = CPTFloat(M_PI_4);
-    
-    return axisLabel;
 }
 
 
 
 
+
+
+#pragma mark - CPTPlotSpaceDelegate
 //TODO 以下代码为新增
 - (BOOL)plotSpace:(CPTPlotSpace *)space shouldScaleBy:(CGFloat)interactionScale aboutPoint:(CGPoint)interactionPoint{
 //    NSLog(@"interactionScale = %f %@", interactionScale, NSStringFromCGPoint(interactionPoint));
@@ -597,6 +316,7 @@ static CGFloat standValue_Y = 55.0;
         CPTXYGraph *newGraph  = (CPTXYGraph *)[space graph];
         CPTXYAxisSet *axisSet = (CPTXYAxisSet *)newGraph.axisSet;
         CPTXYAxis *x          = axisSet.xAxis;
+        
         
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
         #pragma mark CorePlot 点线图的时候，缩放不超过 一定范围的功能实现(参见：http://blog.csdn.net/remote_roamer/article/details/8936889)

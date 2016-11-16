@@ -15,9 +15,11 @@
 		7852985C1DDAF137007C65AA /* CJChartPlotData.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298591DDAF137007C65AA /* CJChartPlotData.m */; };
 		785298651DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298641DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m */; };
 		785298681DDB03F8007C65AA /* CJChartAxisSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298671DDB03F8007C65AA /* CJChartAxisSetting.m */; };
-		7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.m */; };
-		7852986E1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7852986D1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.m */; };
+		7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m */; };
 		785298711DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298701DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m */; };
+		78E550D41DDBEF04000B12C0 /* CPTScatterPlot+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */; };
+		78E550DB1DDC28D3000B12C0 /* CJChartPlotDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */; };
+		78E550DE1DDC2DD4000B12C0 /* CPTAxis+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */; };
 		78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F5E3F41D8ACA8600320334 /* CJDateUti.m */; };
 		808CBA901B735A3300EDFFB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA8F1B735A3300EDFFB9 /* main.m */; };
 		808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA921B735A3300EDFFB9 /* AppDelegate.m */; };
@@ -89,12 +91,16 @@
 		785298641DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYPlotSpace.m"; sourceTree = "<group>"; };
 		785298661DDB03F8007C65AA /* CJChartAxisSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartAxisSetting.h; sourceTree = "<group>"; };
 		785298671DDB03F8007C65AA /* CJChartAxisSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartAxisSetting.m; sourceTree = "<group>"; };
-		785298691DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompleteTitleForWeightChart.h"; sourceTree = "<group>"; };
-		7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteTitleForWeightChart.m"; sourceTree = "<group>"; };
-		7852986C1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompletePaddingAndBorderForWeightChart.h"; sourceTree = "<group>"; };
-		7852986D1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompletePaddingAndBorderForWeightChart.m"; sourceTree = "<group>"; };
+		785298691DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompleteXYGraph.h"; sourceTree = "<group>"; };
+		7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYGraph.m"; sourceTree = "<group>"; };
 		7852986F1DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompleteXYAxisSet.h"; sourceTree = "<group>"; };
 		785298701DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYAxisSet.m"; sourceTree = "<group>"; };
+		78E550D21DDBEF04000B12C0 /* CPTScatterPlot+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTScatterPlot+Complete.h"; sourceTree = "<group>"; };
+		78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTScatterPlot+Complete.m"; sourceTree = "<group>"; };
+		78E550D91DDC28D3000B12C0 /* CJChartPlotDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartPlotDataSource.h; sourceTree = "<group>"; };
+		78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartPlotDataSource.m; sourceTree = "<group>"; };
+		78E550DC1DDC2DD4000B12C0 /* CPTAxis+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTAxis+Complete.h"; sourceTree = "<group>"; };
+		78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTAxis+Complete.m"; sourceTree = "<group>"; };
 		78F5E3F31D8ACA8600320334 /* CJDateUti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDateUti.h; sourceTree = "<group>"; };
 		78F5E3F41D8ACA8600320334 /* CJDateUti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDateUti.m; sourceTree = "<group>"; };
 		808CBA8A1B735A3300EDFFB9 /* ChartDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -307,14 +313,18 @@
 				785298671DDB03F8007C65AA /* CJChartAxisSetting.m */,
 				808CBABE1B735C3D00EDFFB9 /* WeightChartViewController.h */,
 				808CBABF1B735C3D00EDFFB9 /* WeightChartViewController.m */,
+				78E550D91DDC28D3000B12C0 /* CJChartPlotDataSource.h */,
+				78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */,
+				78E550DC1DDC2DD4000B12C0 /* CPTAxis+Complete.h */,
+				78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */,
+				78E550D21DDBEF04000B12C0 /* CPTScatterPlot+Complete.h */,
+				78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */,
 				785298631DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.h */,
 				785298641DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m */,
 				7852986F1DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.h */,
 				785298701DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m */,
-				785298691DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.h */,
-				7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.m */,
-				7852986C1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.h */,
-				7852986D1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.m */,
+				785298691DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.h */,
+				7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m */,
 				808CBABC1B735C3D00EDFFB9 /* WeightChartViewController+Event.h */,
 				808CBABD1B735C3D00EDFFB9 /* WeightChartViewController+Event.m */,
 				808CBAC01B735C3D00EDFFB9 /* WeightChartViewController.xib */,
@@ -692,10 +702,10 @@
 				808CBAEC1B73635C00EDFFB9 /* CoreplotUtil.m in Sources */,
 				808CBB2E1B737D0C00EDFFB9 /* NSDate+FindAllDate.m in Sources */,
 				808CBB311B737D7700EDFFB9 /* NSString+Category.m in Sources */,
-				7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteTitleForWeightChart.m in Sources */,
+				7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m in Sources */,
+				78E550DE1DDC2DD4000B12C0 /* CPTAxis+Complete.m in Sources */,
 				808CBAD91B735C3D00EDFFB9 /* CoreplotChartViewController.m in Sources */,
 				808CBADD1B735C3D00EDFFB9 /* CPTPieChartViewController.m in Sources */,
-				7852986E1DDB0B7B007C65AA /* CPTXYGraph+CompletePaddingAndBorderForWeightChart.m in Sources */,
 				808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */,
 				808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */,
 				808CBAD21B735C3D00EDFFB9 /* CustomChartViewController.m in Sources */,
@@ -719,6 +729,8 @@
 				785298711DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m in Sources */,
 				7852985C1DDAF137007C65AA /* CJChartPlotData.m in Sources */,
 				808CBAE71B735F1E00EDFFB9 /* QCPTTheme.m in Sources */,
+				78E550D41DDBEF04000B12C0 /* CPTScatterPlot+Complete.m in Sources */,
+				78E550DB1DDC28D3000B12C0 /* CJChartPlotDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
