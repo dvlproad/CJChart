@@ -10,10 +10,10 @@
 
 #import <CorePlot-CocoaTouch.h>
 
-#import "ADWFMDBUtil.h"
+#import "WeightFMDBFileManager.h"
 
 #import <CJDatePickerToolBarView.h>
-#import <CJPopupView/UIView+CJPopupInView.h>
+#import <CJPopupAction/UIView+CJPopupInView.h>
 
 #import "CJChartData+Complete.h"
 

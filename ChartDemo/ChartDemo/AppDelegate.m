@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "CommonFMDBUtil.h"
+#import "WeightFMDBFileManager.h"
 
 @interface AppDelegate ()
 
@@ -24,7 +24,7 @@
     NSLog(@"Document路径 = %@",documentsDirectory);
 #endif
     
-    [CommonFMDBUtil setDataBaseName:@"curfmdb.db"];
+    [WeightFMDBFileManager createDatabaseForUserName:@"curfmdb.db"];
 
     return YES;
 }

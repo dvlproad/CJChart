@@ -47,7 +47,7 @@
 		808CBAE21B735C3D00EDFFB9 /* PNChartViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 808CBAD11B735C3D00EDFFB9 /* PNChartViewController.xib */; };
 		808CBAE71B735F1E00EDFFB9 /* QCPTTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBAE61B735F1E00EDFFB9 /* QCPTTheme.m */; };
 		808CBAEC1B73635C00EDFFB9 /* CoreplotUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBAEB1B73635C00EDFFB9 /* CoreplotUtil.m */; };
-		808CBB201B73796600EDFFB9 /* ADWFMDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB1A1B73796600EDFFB9 /* ADWFMDBUtil.m */; };
+		808CBB201B73796600EDFFB9 /* WeightFMDBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB1A1B73796600EDFFB9 /* WeightFMDBFileManager.m */; };
 		808CBB211B73796600EDFFB9 /* curfmdb.db in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB1B1B73796600EDFFB9 /* curfmdb.db */; };
 		808CBB221B73796600EDFFB9 /* food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB1C1B73796600EDFFB9 /* food.plist */; };
 		808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB1F1B73796600EDFFB9 /* ADWInfo.m */; };
@@ -146,8 +146,8 @@
 		808CBAE61B735F1E00EDFFB9 /* QCPTTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCPTTheme.m; sourceTree = "<group>"; };
 		808CBAEA1B73635C00EDFFB9 /* CoreplotUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreplotUtil.h; sourceTree = "<group>"; };
 		808CBAEB1B73635C00EDFFB9 /* CoreplotUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreplotUtil.m; sourceTree = "<group>"; };
-		808CBB191B73796600EDFFB9 /* ADWFMDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADWFMDBUtil.h; sourceTree = "<group>"; };
-		808CBB1A1B73796600EDFFB9 /* ADWFMDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADWFMDBUtil.m; sourceTree = "<group>"; };
+		808CBB191B73796600EDFFB9 /* WeightFMDBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightFMDBFileManager.h; sourceTree = "<group>"; };
+		808CBB1A1B73796600EDFFB9 /* WeightFMDBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeightFMDBFileManager.m; sourceTree = "<group>"; };
 		808CBB1B1B73796600EDFFB9 /* curfmdb.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = curfmdb.db; sourceTree = "<group>"; };
 		808CBB1C1B73796600EDFFB9 /* food.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = food.plist; sourceTree = "<group>"; };
 		808CBB1E1B73796600EDFFB9 /* ADWInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADWInfo.h; sourceTree = "<group>"; };
@@ -399,8 +399,8 @@
 		808CBB181B73796600EDFFB9 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				808CBB191B73796600EDFFB9 /* ADWFMDBUtil.h */,
-				808CBB1A1B73796600EDFFB9 /* ADWFMDBUtil.m */,
+				808CBB191B73796600EDFFB9 /* WeightFMDBFileManager.h */,
+				808CBB1A1B73796600EDFFB9 /* WeightFMDBFileManager.m */,
 				808CBB1B1B73796600EDFFB9 /* curfmdb.db */,
 				808CBB1C1B73796600EDFFB9 /* food.plist */,
 				808CBB1D1B73796600EDFFB9 /* Struct */,
@@ -491,12 +491,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 808CBAAD1B735A3300EDFFB9 /* Build configuration list for PBXNativeTarget "ChartDemo" */;
 			buildPhases = (
-				85906980B1938D081BCB2693 /* 📦 Check Pods Manifest.lock */,
+				85906980B1938D081BCB2693 /* [CP] Check Pods Manifest.lock */,
 				808CBA861B735A3300EDFFB9 /* Sources */,
 				808CBA871B735A3300EDFFB9 /* Frameworks */,
 				808CBA881B735A3300EDFFB9 /* Resources */,
-				76DE46BF363B131D6352F0E7 /* 📦 Embed Pods Frameworks */,
-				39BBF92C363F1E13A3EEEF66 /* 📦 Copy Pods Resources */,
+				76DE46BF363B131D6352F0E7 /* [CP] Embed Pods Frameworks */,
+				39BBF92C363F1E13A3EEEF66 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -511,12 +511,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 808CBAB01B735A3300EDFFB9 /* Build configuration list for PBXNativeTarget "ChartDemoTests" */;
 			buildPhases = (
-				CE720A3D4E100E47D75485A7 /* 📦 Check Pods Manifest.lock */,
+				CE720A3D4E100E47D75485A7 /* [CP] Check Pods Manifest.lock */,
 				808CBA9F1B735A3300EDFFB9 /* Sources */,
 				808CBAA01B735A3300EDFFB9 /* Frameworks */,
 				808CBAA11B735A3300EDFFB9 /* Resources */,
-				3283532BDCF4BD3A3AA88890 /* 📦 Embed Pods Frameworks */,
-				17EF9EC9C5AA82208005AB71 /* 📦 Copy Pods Resources */,
+				3283532BDCF4BD3A3AA88890 /* [CP] Embed Pods Frameworks */,
+				17EF9EC9C5AA82208005AB71 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -601,14 +601,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		17EF9EC9C5AA82208005AB71 /* 📦 Copy Pods Resources */ = {
+		17EF9EC9C5AA82208005AB71 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -616,14 +616,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ChartDemoTests/Pods-ChartDemoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3283532BDCF4BD3A3AA88890 /* 📦 Embed Pods Frameworks */ = {
+		3283532BDCF4BD3A3AA88890 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -631,14 +631,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ChartDemoTests/Pods-ChartDemoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		39BBF92C363F1E13A3EEEF66 /* 📦 Copy Pods Resources */ = {
+		39BBF92C363F1E13A3EEEF66 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -646,14 +646,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ChartDemo/Pods-ChartDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		76DE46BF363B131D6352F0E7 /* 📦 Embed Pods Frameworks */ = {
+		76DE46BF363B131D6352F0E7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -661,34 +661,34 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ChartDemo/Pods-ChartDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		85906980B1938D081BCB2693 /* 📦 Check Pods Manifest.lock */ = {
+		85906980B1938D081BCB2693 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		CE720A3D4E100E47D75485A7 /* 📦 Check Pods Manifest.lock */ = {
+		CE720A3D4E100E47D75485A7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -715,7 +715,7 @@
 				808CBAD71B735C3D00EDFFB9 /* WeightChartViewController.m in Sources */,
 				808CBADB1B735C3D00EDFFB9 /* CPTBarChartViewController.m in Sources */,
 				7852985A1DDAF137007C65AA /* CJChartData+Complete.m in Sources */,
-				808CBB201B73796600EDFFB9 /* ADWFMDBUtil.m in Sources */,
+				808CBB201B73796600EDFFB9 /* WeightFMDBFileManager.m in Sources */,
 				78524ADF1D633BA3004C0CAA /* CJDate.m in Sources */,
 				785298681DDB03F8007C65AA /* CJChartAxisSetting.m in Sources */,
 				785298651DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m in Sources */,

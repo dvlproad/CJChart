@@ -95,23 +95,11 @@
 #endif
     
     
-    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:@"2016-10-29" yValueString:@"72"];
-    info.uid = self.uid;
-    info.wid = @"10001";
-    info.modified = @"1013513515";
-    [ADWFMDBUtil insertInfo:info];
-    
-    ADWInfo *info2 = [[ADWInfo alloc] initWithXDateString:@"2016-11-04" yValueString:@"70"];
-    info2.uid = self.uid;
-    info2.wid = @"10002";
-    info2.modified = @"1013513516";
-    [ADWFMDBUtil insertInfo:info2];
-    
-    ADWInfo *info3 = [[ADWInfo alloc] initWithXDateString:@"2016-11-09" yValueString:@"65"];
-    info3.uid = self.uid;
-    info3.wid = @"10003";
-    info3.modified = @"1013513517";
-    [ADWFMDBUtil insertInfo:info3];
+//    ADWInfo *info = [[ADWInfo alloc] initWithXDateString:@"2017-03-02" yValueString:@"66"];
+//    info.uid = self.uid;
+//    info.wid = @"10009";
+//    info.modified = @"1013513515";
+//    [WeightFMDBFileManager insertInfo:info];
 }
 
 
@@ -123,7 +111,7 @@
 
 /** 获取本地数据库中的体重数据 */
 - (void)getLocalInfoForWeight {
-    self.datas = [ADWFMDBUtil selectInfoArrayWhereUID:self.uid];
+    self.datas = [WeightFMDBFileManager selectInfoArrayWhereUID:self.uid];
     NSLog(@"self.datas = %@", self.datas);
 }
 
@@ -301,10 +289,7 @@
 //放大缩小包括滑动的时候都会调用它
 - (CPTPlotRange *)plotSpace:(CPTPlotSpace *)space willChangePlotRangeTo:(CPTPlotRange *)newRange forCoordinate:(CPTCoordinate)coordinate
 {
-    
-    
     if ( coordinate == CPTCoordinateY){
-        
         #pragma mark 功能：禁止Y轴缩放（虽然之前以通过设置Y的range和gloalrange来实现禁止Y轴的移动，这种情况下，虽然Y轴缩放的时候没法再原来的基础上再缩小了，但却还会有在原来的基础上放大的情况，所以为保证Y轴不止不能移动，也要不能缩放，这里要在原来禁止移动的基础上，禁止掉Y轴的缩放。
         CPTXYPlotSpace *xySpace = (CPTXYPlotSpace*)space;
         return xySpace.yRange; //xySpace.globalYRange

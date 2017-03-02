@@ -1,8 +1,8 @@
 PODS:
+  - CJFMDBFileManager (1.1.0):
+    - FMDB (~> 2.6.2)
   - CJPickerToolBarView (0.0.3)
-  - CJPopupView (1.3.0)
-  - CommonFMDBUtil (0.0.2):
-    - FMDB (~> 2.5)
+  - CJPopupAction (1.4.2)
   - CommonInfoHelper (0.0.2)
   - CorePlot (2.1)
   - FMDB (2.6.2):
@@ -13,23 +13,23 @@ PODS:
   - UICountingLabel (1.2.0)
 
 DEPENDENCIES:
+  - CJFMDBFileManager (~> 1.1.0)
   - CJPickerToolBarView (~> 0.0.3)
-  - CJPopupView (~> 1.3.0)
-  - CommonFMDBUtil (~> 0.0.2)
+  - CJPopupAction (~> 1.4.2)
   - CommonInfoHelper (~> 0.0.2)
   - CorePlot (~> 2.1)
   - PNChart (~> 0.8.5)
 
 SPEC CHECKSUMS:
+  CJFMDBFileManager: ce994ffe1b97d6c34979c18e7179e0936cd70966
   CJPickerToolBarView: b4808e5aa090b58db94d00ad217840bee2d63adb
-  CJPopupView: 1da13b227dc3121302fa1813bc83acf11f96b23e
-  CommonFMDBUtil: 03e20e29bca2ae2d0ba549394259d652c93a207c
+  CJPopupAction: e491b5f3fdb9d50dddedf450eeb94e36cc61b749
   CommonInfoHelper: e20af85759476bf1588010793cbe5097c80efc5c
   CorePlot: ab9898c79b94999018e9634ab0aa4c21480c8552
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   PNChart: 84774d225c2126ded6c93d4dbe6ae98c3a73c2d2
   UICountingLabel: 1db4e7d023e1762171eb226d6dff47a7a84f27aa
 
-PODFILE CHECKSUM: 5383a719b38d950970337663a8bde9052480af3b
+PODFILE CHECKSUM: c60f3aa6d0691855bb08d64f02dc87b6f470bbea
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.1.0.rc.2

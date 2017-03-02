@@ -31,15 +31,11 @@
     
     picker_birthday.datePicker.date = [dateFormatter dateFromString:@"2014-12-27"];
     
-    [picker_birthday cj_popupInWindowAtPosition:CJWindowPositionBottom
-                                  animationType:CJAnimationTypeNormal
-                                   showComplete:^{
-                                      
-                                  } tapBlankComplete:^{
-                                      
-                                  } hideComplete:^{
-                                      
-                                  }];
+    [picker_birthday cj_popupInWindowAtPosition:CJWindowPositionBottom animationType:CJAnimationTypeNormal showComplete:^{
+        
+    } tapBlankComplete:^{
+        
+    }];
 }
 
 - (void)confirmDelegate_datePicker:(CJDatePickerToolBarView *)pickerToolBarView{
