@@ -31,7 +31,7 @@
 - (void)completeChartDataByData:(NSArray *)datas withDateBegin:(NSDate *)dateBegin dateEnd:(NSDate *)dateEnd {
     /* 2、获取坐标轴上显示的开头日期和结尾日期 */
     //①、判断：如果现有坐标刻度(X轴坐标)小于最小应有值，这里应默认将其扩大，以使得不会产生一个坐标里面只有一个刻度的效果
-    NSInteger dayDistance = [dateEnd dayDistanceFromDate:dateBegin];
+    NSInteger dayDistance = [dateEnd dayDistanceFromDate:dateBegin]+1; //共有多少天
     NSLog(@"数据源的天数差为%ld", dayDistance);
     if (dayDistance < self.xShowCountLeast) {
         dateBegin = [dateEnd dateDistances:-self.xShowCountLeast+1 type:eDistanceDay];

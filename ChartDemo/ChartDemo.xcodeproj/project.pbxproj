@@ -19,7 +19,6 @@
 		78E550D41DDBEF04000B12C0 /* CPTScatterPlot+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */; };
 		78E550DB1DDC28D3000B12C0 /* CJScatterPlotDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DA1DDC28D3000B12C0 /* CJScatterPlotDataSource.m */; };
 		78E550DE1DDC2DD4000B12C0 /* CPTAxis+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */; };
-		78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F5E3F41D8ACA8600320334 /* CJDateUti.m */; };
 		808CBA901B735A3300EDFFB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA8F1B735A3300EDFFB9 /* main.m */; };
 		808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA921B735A3300EDFFB9 /* AppDelegate.m */; };
 		808CBA961B735A3300EDFFB9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA951B735A3300EDFFB9 /* ViewController.m */; };
@@ -94,8 +93,6 @@
 		78E550DA1DDC28D3000B12C0 /* CJScatterPlotDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJScatterPlotDataSource.m; sourceTree = "<group>"; };
 		78E550DC1DDC2DD4000B12C0 /* CPTAxis+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTAxis+Complete.h"; sourceTree = "<group>"; };
 		78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTAxis+Complete.m"; sourceTree = "<group>"; };
-		78F5E3F31D8ACA8600320334 /* CJDateUti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDateUti.h; sourceTree = "<group>"; };
-		78F5E3F41D8ACA8600320334 /* CJDateUti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDateUti.m; sourceTree = "<group>"; };
 		808CBA8A1B735A3300EDFFB9 /* ChartDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChartDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		808CBA8E1B735A3300EDFFB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		808CBA8F1B735A3300EDFFB9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -187,15 +184,6 @@
 				785DF2A61E681AFA00DC9C64 /* CJChartPlotData.m */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		78F5E3F11D8ACA4800320334 /* DateUtil */ = {
-			isa = PBXGroup;
-			children = (
-				78F5E3F31D8ACA8600320334 /* CJDateUti.h */,
-				78F5E3F41D8ACA8600320334 /* CJDateUti.m */,
-			);
-			path = DateUtil;
 			sourceTree = "<group>";
 		};
 		808CBA811B735A3300EDFFB9 = {
@@ -365,7 +353,6 @@
 		808CBAE81B73635C00EDFFB9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				78F5E3F11D8ACA4800320334 /* DateUtil */,
 				808CBAE91B73635C00EDFFB9 /* Coreplot */,
 			);
 			path = Utils;
@@ -498,6 +485,7 @@
 				TargetAttributes = {
 					808CBA891B735A3300EDFFB9 = {
 						CreatedOnToolsVersion = 6.4;
+						ProvisioningStyle = Automatic;
 					};
 					808CBAA21B735A3300EDFFB9 = {
 						CreatedOnToolsVersion = 6.4;
@@ -670,7 +658,6 @@
 				808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */,
 				808CBAD21B735C3D00EDFFB9 /* CustomChartViewController.m in Sources */,
 				808CBAE11B735C3D00EDFFB9 /* PNChartViewController.m in Sources */,
-				78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */,
 				808CBAD71B735C3D00EDFFB9 /* WeightChartViewController.m in Sources */,
 				808CBADB1B735C3D00EDFFB9 /* CPTBarChartViewController.m in Sources */,
 				808CBB201B73796600EDFFB9 /* WeightFMDBFileManager.m in Sources */,
@@ -811,6 +798,9 @@
 			baseConfigurationReference = 682F59E6C828501A99429E66 /* Pods-ChartDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/ChartDemo/ChartDemo.pch";
 				INFOPLIST_FILE = ChartDemo/Info.plist;
@@ -824,6 +814,9 @@
 			baseConfigurationReference = 505308E5C954C157336EA13F /* Pods-ChartDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/ChartDemo/ChartDemo.pch";
 				INFOPLIST_FILE = ChartDemo/Info.plist;
