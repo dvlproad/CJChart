@@ -10,7 +10,7 @@ target 'ChartDemo' do
   pod 'CJPopupAction', '~> 1.4.2'
   pod 'CJPickerToolBarView', '~> 0.0.3'
   
-  pod 'CJCategory', '~> 0.0.3'
+  pod 'CJCategory', '~> 0.0.4'
   
 end
 
