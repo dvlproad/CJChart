@@ -17,7 +17,7 @@
 
 #import "CJChartData+Complete.h"
 
-@interface WeightChartViewController : UIViewController<CPTPlotDataSource, CPTScatterPlotDelegate, CPTAxisDelegate, CPTPlotSpaceDelegate, CPTScatterPlotDelegate, UITextFieldDelegate>{//CPTScatterPlotDelegate是为了调用点击各个数据点响应操作
+@interface WeightChartViewController : UIViewController<CPTPlotDataSource, CPTAxisDelegate, CPTPlotSpaceDelegate, UITextFieldDelegate> {
 //    CGFloat curValue;
 //    CGFloat tarValue;
     
@@ -33,7 +33,7 @@
 @property (nonatomic, readwrite, strong) CJChartData *chartDataModel; /**< 图标数据 */
 
 @property(nonatomic, strong) NSString *uid;
-@property(nonatomic, strong) NSMutableArray *datas;
+@property(nonatomic, strong) NSMutableArray<ADWInfo *> *datas;
 
 
 @end

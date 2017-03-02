@@ -19,7 +19,7 @@
 #import "QCPTTheme.h"
 #import "CJChartAxisSetting.h"
 
-#import "CJChartPlotDataSource.h"
+#import "CJScatterPlotDataSource.h"
 
 
 //边框属性
@@ -36,7 +36,7 @@
 @interface WeightChartViewController () {
     
 }
-@property (nonatomic, strong) CJChartPlotDataSource *chartPlotDataSource;
+@property (nonatomic, strong) CJScatterPlotDataSource *scatterPlotDataSource;
 
 @property (nonatomic, strong) CJChartAxisSetting *chartAxisSetting;
 @property (nonatomic, assign) BOOL customXAxis; /**< 自定义X轴 */
@@ -118,8 +118,8 @@
 /** 更新体重的UI */
 - (void)reloadUIForWeight {
     self.chartDataModel = [[CJChartData alloc] initWithXShowCountLeast:3 xShowCountDefault:10];
-    self.chartDataModel.xPlaceholderUnitCountBegin = 2;
-    self.chartDataModel.xPlaceholderUnitCountLast = 2;
+    self.chartDataModel.xPlaceholderUnitCountAtBegin = 2;
+    self.chartDataModel.xPlaceholderUnitCountAtLast = 2;
     self.chartDataModel.yMinWhenEmpty = standValue_Y - 5;
     self.chartDataModel.yMaxWhenEmpty = standValue_Y + 6;
     [self.chartDataModel completeChartDataByData:self.datas];
@@ -216,8 +216,8 @@
     CPTScatterPlot *scatterPlot  = [[CPTScatterPlot alloc] init];
     [scatterPlot completeScatterPlot:@"Blue Plot"];
     
-    self.chartPlotDataSource = [[CJChartPlotDataSource alloc] initWithChartData:self.chartDataModel];
-    scatterPlot.dataSource = self.chartPlotDataSource; //曲线图的数据源
+    self.scatterPlotDataSource = [[CJScatterPlotDataSource alloc] initWithChartData:self.chartDataModel];
+    scatterPlot.dataSource = self.scatterPlotDataSource; //曲线图的数据源
     
     scatterPlot.delegate = self;  //曲线图的委托，比如实现各个数据点响应操作的CPTScatterPlotDelegate委托
     

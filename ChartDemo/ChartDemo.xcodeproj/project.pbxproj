@@ -9,16 +9,15 @@
 /* Begin PBXBuildFile section */
 		2EC87FFB2394D348C4B40D43 /* libPods-ChartDemoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8E430859D5F0BD05E5D48D7 /* libPods-ChartDemoTests.a */; };
 		6B991AF09C4FDF754ECAE57A /* libPods-ChartDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01E12DCA3EAE10F89240AE86 /* libPods-ChartDemo.a */; };
-		78524ADF1D633BA3004C0CAA /* CJDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 78524ADE1D633BA3004C0CAA /* CJDate.m */; };
-		7852985A1DDAF137007C65AA /* CJChartData+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298551DDAF137007C65AA /* CJChartData+Complete.m */; };
-		7852985B1DDAF137007C65AA /* CJChartData.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298571DDAF137007C65AA /* CJChartData.m */; };
-		7852985C1DDAF137007C65AA /* CJChartPlotData.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298591DDAF137007C65AA /* CJChartPlotData.m */; };
 		785298651DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298641DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m */; };
 		785298681DDB03F8007C65AA /* CJChartAxisSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298671DDB03F8007C65AA /* CJChartAxisSetting.m */; };
 		7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m */; };
 		785298711DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 785298701DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m */; };
+		785DF2A91E681AFA00DC9C64 /* CJChartData+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 785DF2A21E681AFA00DC9C64 /* CJChartData+Complete.m */; };
+		785DF2AA1E681AFA00DC9C64 /* CJChartData.m in Sources */ = {isa = PBXBuildFile; fileRef = 785DF2A41E681AFA00DC9C64 /* CJChartData.m */; };
+		785DF2AB1E681AFA00DC9C64 /* CJChartPlotData.m in Sources */ = {isa = PBXBuildFile; fileRef = 785DF2A61E681AFA00DC9C64 /* CJChartPlotData.m */; };
 		78E550D41DDBEF04000B12C0 /* CPTScatterPlot+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */; };
-		78E550DB1DDC28D3000B12C0 /* CJChartPlotDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */; };
+		78E550DB1DDC28D3000B12C0 /* CJScatterPlotDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DA1DDC28D3000B12C0 /* CJScatterPlotDataSource.m */; };
 		78E550DE1DDC2DD4000B12C0 /* CPTAxis+Complete.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */; };
 		78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F5E3F41D8ACA8600320334 /* CJDateUti.m */; };
 		808CBA901B735A3300EDFFB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBA8F1B735A3300EDFFB9 /* main.m */; };
@@ -52,10 +51,6 @@
 		808CBB221B73796600EDFFB9 /* food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB1C1B73796600EDFFB9 /* food.plist */; };
 		808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB1F1B73796600EDFFB9 /* ADWInfo.m */; };
 		808CBB261B737AB600EDFFB9 /* ADNInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB251B737AB600EDFFB9 /* ADNInfo.m */; };
-		808CBB2D1B737D0C00EDFFB9 /* NSDate+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB2A1B737D0C00EDFFB9 /* NSDate+Category.m */; };
-		808CBB2E1B737D0C00EDFFB9 /* NSDate+FindAllDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB2C1B737D0C00EDFFB9 /* NSDate+FindAllDate.m */; };
-		808CBB311B737D7700EDFFB9 /* NSString+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB301B737D7700EDFFB9 /* NSString+Category.m */; };
-		808CBB341B737DD600EDFFB9 /* NSString+Validate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808CBB331B737DD600EDFFB9 /* NSString+Validate.m */; };
 		808CBB3D1B73813B00EDFFB9 /* bar-chart.png in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB381B73813B00EDFFB9 /* bar-chart.png */; };
 		808CBB3E1B73813B00EDFFB9 /* imageFill0.png in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB391B73813B00EDFFB9 /* imageFill0.png */; };
 		808CBB3F1B73813B00EDFFB9 /* imageFill1.png in Resources */ = {isa = PBXBuildFile; fileRef = 808CBB3A1B73813B00EDFFB9 /* imageFill1.png */; };
@@ -79,14 +74,6 @@
 		505308E5C954C157336EA13F /* Pods-ChartDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChartDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChartDemo/Pods-ChartDemo.release.xcconfig"; sourceTree = "<group>"; };
 		682F59E6C828501A99429E66 /* Pods-ChartDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChartDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChartDemo/Pods-ChartDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		78291B49E575AC27581B77FA /* Pods-ChartDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChartDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChartDemoTests/Pods-ChartDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
-		78524ADD1D633BA3004C0CAA /* CJDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDate.h; sourceTree = "<group>"; };
-		78524ADE1D633BA3004C0CAA /* CJDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJDate.m; sourceTree = "<group>"; };
-		785298541DDAF137007C65AA /* CJChartData+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CJChartData+Complete.h"; sourceTree = "<group>"; };
-		785298551DDAF137007C65AA /* CJChartData+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CJChartData+Complete.m"; sourceTree = "<group>"; };
-		785298561DDAF137007C65AA /* CJChartData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartData.h; sourceTree = "<group>"; };
-		785298571DDAF137007C65AA /* CJChartData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartData.m; sourceTree = "<group>"; };
-		785298581DDAF137007C65AA /* CJChartPlotData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartPlotData.h; sourceTree = "<group>"; };
-		785298591DDAF137007C65AA /* CJChartPlotData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartPlotData.m; sourceTree = "<group>"; };
 		785298631DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompleteXYPlotSpace.h"; sourceTree = "<group>"; };
 		785298641DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYPlotSpace.m"; sourceTree = "<group>"; };
 		785298661DDB03F8007C65AA /* CJChartAxisSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartAxisSetting.h; sourceTree = "<group>"; };
@@ -95,10 +82,16 @@
 		7852986A1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYGraph.m"; sourceTree = "<group>"; };
 		7852986F1DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTXYGraph+CompleteXYAxisSet.h"; sourceTree = "<group>"; };
 		785298701DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTXYGraph+CompleteXYAxisSet.m"; sourceTree = "<group>"; };
+		785DF2A11E681AFA00DC9C64 /* CJChartData+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CJChartData+Complete.h"; sourceTree = "<group>"; };
+		785DF2A21E681AFA00DC9C64 /* CJChartData+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CJChartData+Complete.m"; sourceTree = "<group>"; };
+		785DF2A31E681AFA00DC9C64 /* CJChartData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartData.h; sourceTree = "<group>"; };
+		785DF2A41E681AFA00DC9C64 /* CJChartData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartData.m; sourceTree = "<group>"; };
+		785DF2A51E681AFA00DC9C64 /* CJChartPlotData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartPlotData.h; sourceTree = "<group>"; };
+		785DF2A61E681AFA00DC9C64 /* CJChartPlotData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartPlotData.m; sourceTree = "<group>"; };
 		78E550D21DDBEF04000B12C0 /* CPTScatterPlot+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTScatterPlot+Complete.h"; sourceTree = "<group>"; };
 		78E550D31DDBEF04000B12C0 /* CPTScatterPlot+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTScatterPlot+Complete.m"; sourceTree = "<group>"; };
-		78E550D91DDC28D3000B12C0 /* CJChartPlotDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJChartPlotDataSource.h; sourceTree = "<group>"; };
-		78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJChartPlotDataSource.m; sourceTree = "<group>"; };
+		78E550D91DDC28D3000B12C0 /* CJScatterPlotDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJScatterPlotDataSource.h; sourceTree = "<group>"; };
+		78E550DA1DDC28D3000B12C0 /* CJScatterPlotDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJScatterPlotDataSource.m; sourceTree = "<group>"; };
 		78E550DC1DDC2DD4000B12C0 /* CPTAxis+Complete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPTAxis+Complete.h"; sourceTree = "<group>"; };
 		78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CPTAxis+Complete.m"; sourceTree = "<group>"; };
 		78F5E3F31D8ACA8600320334 /* CJDateUti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJDateUti.h; sourceTree = "<group>"; };
@@ -154,14 +147,6 @@
 		808CBB1F1B73796600EDFFB9 /* ADWInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADWInfo.m; sourceTree = "<group>"; };
 		808CBB241B737AB600EDFFB9 /* ADNInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNInfo.h; sourceTree = "<group>"; };
 		808CBB251B737AB600EDFFB9 /* ADNInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNInfo.m; sourceTree = "<group>"; };
-		808CBB291B737D0C00EDFFB9 /* NSDate+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Category.h"; sourceTree = "<group>"; };
-		808CBB2A1B737D0C00EDFFB9 /* NSDate+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Category.m"; sourceTree = "<group>"; };
-		808CBB2B1B737D0C00EDFFB9 /* NSDate+FindAllDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+FindAllDate.h"; sourceTree = "<group>"; };
-		808CBB2C1B737D0C00EDFFB9 /* NSDate+FindAllDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+FindAllDate.m"; sourceTree = "<group>"; };
-		808CBB2F1B737D7700EDFFB9 /* NSString+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Category.h"; sourceTree = "<group>"; };
-		808CBB301B737D7700EDFFB9 /* NSString+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Category.m"; sourceTree = "<group>"; };
-		808CBB321B737DD600EDFFB9 /* NSString+Validate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Validate.h"; sourceTree = "<group>"; };
-		808CBB331B737DD600EDFFB9 /* NSString+Validate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Validate.m"; sourceTree = "<group>"; };
 		808CBB351B737EFE00EDFFB9 /* ChartDemo.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChartDemo.pch; sourceTree = "<group>"; };
 		808CBB381B73813B00EDFFB9 /* bar-chart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bar-chart.png"; sourceTree = "<group>"; };
 		808CBB391B73813B00EDFFB9 /* imageFill0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = imageFill0.png; sourceTree = "<group>"; };
@@ -191,17 +176,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		785298531DDAF137007C65AA /* CJChartData */ = {
+		785DF2A01E681AFA00DC9C64 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				785298541DDAF137007C65AA /* CJChartData+Complete.h */,
-				785298551DDAF137007C65AA /* CJChartData+Complete.m */,
-				785298561DDAF137007C65AA /* CJChartData.h */,
-				785298571DDAF137007C65AA /* CJChartData.m */,
-				785298581DDAF137007C65AA /* CJChartPlotData.h */,
-				785298591DDAF137007C65AA /* CJChartPlotData.m */,
+				785DF2A11E681AFA00DC9C64 /* CJChartData+Complete.h */,
+				785DF2A21E681AFA00DC9C64 /* CJChartData+Complete.m */,
+				785DF2A31E681AFA00DC9C64 /* CJChartData.h */,
+				785DF2A41E681AFA00DC9C64 /* CJChartData.m */,
+				785DF2A51E681AFA00DC9C64 /* CJChartPlotData.h */,
+				785DF2A61E681AFA00DC9C64 /* CJChartPlotData.m */,
 			);
-			path = CJChartData;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		78F5E3F11D8ACA4800320334 /* DateUtil */ = {
@@ -240,12 +225,11 @@
 				808CBA921B735A3300EDFFB9 /* AppDelegate.m */,
 				808CBA941B735A3300EDFFB9 /* ViewController.h */,
 				808CBA951B735A3300EDFFB9 /* ViewController.m */,
-				785298531DDAF137007C65AA /* CJChartData */,
+				785DF2A01E681AFA00DC9C64 /* Models */,
 				808CBA971B735A3300EDFFB9 /* Main.storyboard */,
 				808CBA9A1B735A3300EDFFB9 /* Images.xcassets */,
 				808CBA9C1B735A3300EDFFB9 /* LaunchScreen.xib */,
 				808CBB361B73813B00EDFFB9 /* res_images */,
-				808CBB271B737D0C00EDFFB9 /* Librarys */,
 				808CBB181B73796600EDFFB9 /* Database */,
 				808CBAE81B73635C00EDFFB9 /* Utils */,
 				808CBAE31B735F1E00EDFFB9 /* View */,
@@ -313,8 +297,8 @@
 				785298671DDB03F8007C65AA /* CJChartAxisSetting.m */,
 				808CBABE1B735C3D00EDFFB9 /* WeightChartViewController.h */,
 				808CBABF1B735C3D00EDFFB9 /* WeightChartViewController.m */,
-				78E550D91DDC28D3000B12C0 /* CJChartPlotDataSource.h */,
-				78E550DA1DDC28D3000B12C0 /* CJChartPlotDataSource.m */,
+				78E550D91DDC28D3000B12C0 /* CJScatterPlotDataSource.h */,
+				78E550DA1DDC28D3000B12C0 /* CJScatterPlotDataSource.m */,
 				78E550DC1DDC2DD4000B12C0 /* CPTAxis+Complete.h */,
 				78E550DD1DDC2DD4000B12C0 /* CPTAxis+Complete.m */,
 				78E550D21DDBEF04000B12C0 /* CPTScatterPlot+Complete.h */,
@@ -417,31 +401,6 @@
 				808CBB251B737AB600EDFFB9 /* ADNInfo.m */,
 			);
 			path = Struct;
-			sourceTree = "<group>";
-		};
-		808CBB271B737D0C00EDFFB9 /* Librarys */ = {
-			isa = PBXGroup;
-			children = (
-				808CBB2F1B737D7700EDFFB9 /* NSString+Category.h */,
-				808CBB301B737D7700EDFFB9 /* NSString+Category.m */,
-				808CBB321B737DD600EDFFB9 /* NSString+Validate.h */,
-				808CBB331B737DD600EDFFB9 /* NSString+Validate.m */,
-				808CBB281B737D0C00EDFFB9 /* NSDate */,
-			);
-			path = Librarys;
-			sourceTree = "<group>";
-		};
-		808CBB281B737D0C00EDFFB9 /* NSDate */ = {
-			isa = PBXGroup;
-			children = (
-				808CBB291B737D0C00EDFFB9 /* NSDate+Category.h */,
-				808CBB2A1B737D0C00EDFFB9 /* NSDate+Category.m */,
-				808CBB2B1B737D0C00EDFFB9 /* NSDate+FindAllDate.h */,
-				808CBB2C1B737D0C00EDFFB9 /* NSDate+FindAllDate.m */,
-				78524ADD1D633BA3004C0CAA /* CJDate.h */,
-				78524ADE1D633BA3004C0CAA /* CJDate.m */,
-			);
-			path = NSDate;
 			sourceTree = "<group>";
 		};
 		808CBB361B73813B00EDFFB9 /* res_images */ = {
@@ -698,39 +657,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				785DF2AA1E681AFA00DC9C64 /* CJChartData.m in Sources */,
 				808CBA961B735A3300EDFFB9 /* ViewController.m in Sources */,
 				808CBAEC1B73635C00EDFFB9 /* CoreplotUtil.m in Sources */,
-				808CBB2E1B737D0C00EDFFB9 /* NSDate+FindAllDate.m in Sources */,
-				808CBB311B737D7700EDFFB9 /* NSString+Category.m in Sources */,
 				7852986B1DDB097D007C65AA /* CPTXYGraph+CompleteXYGraph.m in Sources */,
+				785DF2AB1E681AFA00DC9C64 /* CJChartPlotData.m in Sources */,
 				78E550DE1DDC2DD4000B12C0 /* CPTAxis+Complete.m in Sources */,
+				785DF2A91E681AFA00DC9C64 /* CJChartData+Complete.m in Sources */,
 				808CBAD91B735C3D00EDFFB9 /* CoreplotChartViewController.m in Sources */,
 				808CBADD1B735C3D00EDFFB9 /* CPTPieChartViewController.m in Sources */,
 				808CBA931B735A3300EDFFB9 /* AppDelegate.m in Sources */,
 				808CBB231B73796600EDFFB9 /* ADWInfo.m in Sources */,
 				808CBAD21B735C3D00EDFFB9 /* CustomChartViewController.m in Sources */,
 				808CBAE11B735C3D00EDFFB9 /* PNChartViewController.m in Sources */,
-				808CBB2D1B737D0C00EDFFB9 /* NSDate+Category.m in Sources */,
 				78F5E3F51D8ACA8600320334 /* CJDateUti.m in Sources */,
 				808CBAD71B735C3D00EDFFB9 /* WeightChartViewController.m in Sources */,
 				808CBADB1B735C3D00EDFFB9 /* CPTBarChartViewController.m in Sources */,
-				7852985A1DDAF137007C65AA /* CJChartData+Complete.m in Sources */,
 				808CBB201B73796600EDFFB9 /* WeightFMDBFileManager.m in Sources */,
-				78524ADF1D633BA3004C0CAA /* CJDate.m in Sources */,
 				785298681DDB03F8007C65AA /* CJChartAxisSetting.m in Sources */,
 				785298651DDAF6AF007C65AA /* CPTXYGraph+CompleteXYPlotSpace.m in Sources */,
 				808CBADF1B735C3D00EDFFB9 /* CPTScatterPlotViewController.m in Sources */,
 				808CBAD41B735C3D00EDFFB9 /* NutritionChartViewController.m in Sources */,
 				808CBB261B737AB600EDFFB9 /* ADNInfo.m in Sources */,
 				808CBAD61B735C3D00EDFFB9 /* WeightChartViewController+Event.m in Sources */,
-				808CBB341B737DD600EDFFB9 /* NSString+Validate.m in Sources */,
-				7852985B1DDAF137007C65AA /* CJChartData.m in Sources */,
 				808CBA901B735A3300EDFFB9 /* main.m in Sources */,
 				785298711DDB0EB7007C65AA /* CPTXYGraph+CompleteXYAxisSet.m in Sources */,
-				7852985C1DDAF137007C65AA /* CJChartPlotData.m in Sources */,
 				808CBAE71B735F1E00EDFFB9 /* QCPTTheme.m in Sources */,
 				78E550D41DDBEF04000B12C0 /* CPTScatterPlot+Complete.m in Sources */,
-				78E550DB1DDC28D3000B12C0 /* CJChartPlotDataSource.m in Sources */,
+				78E550DB1DDC28D3000B12C0 /* CJScatterPlotDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,4 +1,17 @@
 PODS:
+  - CJCategory (0.0.2):
+    - CJCategory/NSData (= 0.0.2)
+    - CJCategory/NSDate (= 0.0.2)
+    - CJCategory/NSDictionary (= 0.0.2)
+    - CJCategory/NSString (= 0.0.2)
+    - CJCategory/UIImage (= 0.0.2)
+    - CJCategory/UIView (= 0.0.2)
+  - CJCategory/NSData (0.0.2)
+  - CJCategory/NSDate (0.0.2)
+  - CJCategory/NSDictionary (0.0.2)
+  - CJCategory/NSString (0.0.2)
+  - CJCategory/UIImage (0.0.2)
+  - CJCategory/UIView (0.0.2)
   - CJFMDBFileManager (1.1.0):
     - FMDB (~> 2.6.2)
   - CJPickerToolBarView (0.0.3)
@@ -13,6 +26,7 @@ PODS:
   - UICountingLabel (1.2.0)
 
 DEPENDENCIES:
+  - CJCategory (~> 0.0.2)
   - CJFMDBFileManager (~> 1.1.0)
   - CJPickerToolBarView (~> 0.0.3)
   - CJPopupAction (~> 1.4.2)
@@ -21,6 +35,7 @@ DEPENDENCIES:
   - PNChart (~> 0.8.5)
 
 SPEC CHECKSUMS:
+  CJCategory: 4e54ce0d7b98e27ecd39ed1a035db77841bb2ac4
   CJFMDBFileManager: ce994ffe1b97d6c34979c18e7179e0936cd70966
   CJPickerToolBarView: b4808e5aa090b58db94d00ad217840bee2d63adb
   CJPopupAction: e491b5f3fdb9d50dddedf450eeb94e36cc61b749
@@ -30,6 +45,6 @@ SPEC CHECKSUMS:
   PNChart: 84774d225c2126ded6c93d4dbe6ae98c3a73c2d2
   UICountingLabel: 1db4e7d023e1762171eb226d6dff47a7a84f27aa
 
-PODFILE CHECKSUM: c60f3aa6d0691855bb08d64f02dc87b6f470bbea
+PODFILE CHECKSUM: fc4dac16ff782649e33036c07f3d8c2cc0b7f8f7
 
 COCOAPODS: 1.1.0.rc.2

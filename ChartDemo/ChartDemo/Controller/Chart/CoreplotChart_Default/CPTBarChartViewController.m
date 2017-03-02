@@ -62,7 +62,7 @@
 {
     static NSUInteger counter = 0;
     
-    NSLog(@"\n----------------------------\ntimerFired: %d", counter++);
+    NSLog(@"\n----------------------------\ntimerFired: %ld", counter++);
     [self setUpBarData];
     [self createChart];
 }
